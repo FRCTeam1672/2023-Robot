@@ -55,7 +55,7 @@ public class DriveSubsystem extends SubsystemBase {
     suppressTeleop = false;
   }
 
-  public void getToNode(Node.Position position) {
+  public void getToNode(Node node) {
     suppressTeleop = true;
     // TODO
   }

@@ -11,7 +11,7 @@ public class CommandFactory {
   public static Command win(RobotContainer robotContainer, DriveSubsystem driveSubsystem, ArmSubsystem armSubsystem) {
     return Commands
       .parallel(
-        Commands.run(() -> driveSubsystem.getToNode(robotContainer.getTargetNode().position)),
+        Commands.run(() -> driveSubsystem.getToNode(robotContainer.getTargetNode())),
         Commands.run(() -> armSubsystem.setState(robotContainer.getTargetNode().heightAsArmState()))
       )
       .until(() -> driveSubsystem.inPosition() && armSubsystem.isStable())
