@@ -16,7 +16,7 @@ public class CommandFactory {
       )
       .until(() -> driveSubsystem.inPosition() && armSubsystem.isStable())
       .andThen(armSubsystem.getOuttakeCommand())
-      .finallyDo(e -> stowCommand(armSubsystem));
+      .finallyDo(e -> {stowCommand(armSubsystem); driveSubsystem.restoreTeleop();});
   }
 
   public static Command groundIntake(ArmSubsystem armSubsystem) {

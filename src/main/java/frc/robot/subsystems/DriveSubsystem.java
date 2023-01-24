@@ -13,19 +13,21 @@ import static frc.robot.Constants.Drive.*;
 
 public class DriveSubsystem extends SubsystemBase {
   private Supplier<Double> forwardStick, turnStick;
+  private boolean suppressTeleop = true;
 
   private final WPI_TalonSRX leftLeader = new WPI_TalonSRX(LEFT_LEADER_ID);
   private final WPI_TalonSRX rightLeader = new WPI_TalonSRX(RIGHT_LEADER_ID);
-  private final WPI_VictorSPX leftFollower = new WPI_VictorSPX(LEFT_FOLLOWER_ID);
-  private final WPI_VictorSPX rightFollower = new WPI_VictorSPX(RIGHT_FOLLOWER_ID);
+  private final WPI_TalonSRX leftFollower = new WPI_TalonSRX(LEFT_FOLLOWER_ID);
+  private final WPI_TalonSRX rightFollower = new WPI_TalonSRX(RIGHT_FOLLOWER_ID);
 
   public DriveSubsystem() {
     leftFollower.follow(leftLeader);
     rightFollower.follow(rightLeader);
   }
 
+  @Override
   public void periodic() {
-    if(!DriverStation.isTeleopEnabled()) return;
+    if(suppressTeleop || !DriverStation.isTeleopEnabled()) return;
 
     WheelSpeeds arcadeSpeeds = WheelSpeeds.fromArcade(forwardStick.get(), turnStick.get() * CURVECADE_TURN_SCALE);
     WheelSpeeds curvatureSpeeds = WheelSpeeds.fromCurvature(forwardStick.get(), turnStick.get());
@@ -50,6 +52,18 @@ public class DriveSubsystem extends SubsystemBase {
     this.turnStick = turnStick;
   }
 
+  public void restoreTeleop() {
+    suppressTeleop = false;
+  }
+
+  public void getToNode(Node.Position position) {
+    suppressTeleop = true;
+    // TODO
+  }
+  public boolean inPosition() {
+    return true; // TODO
+  }
+
   private static class WheelSpeeds {
     public final double left;
     public final double right;
@@ -67,12 +81,5 @@ public class DriveSubsystem extends SubsystemBase {
       turnSpeed = Math.abs(baseSpeed) * turnSpeed;
       return new WheelSpeeds(baseSpeed + turnSpeed, baseSpeed - turnSpeed);
     }
-  }
-
-  public void getToNode(Node.Position position) {
-    // TODO
-  }
-  public boolean inPosition() {
-    return true; // TODO
   }
 }
