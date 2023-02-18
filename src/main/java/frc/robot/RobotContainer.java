@@ -5,11 +5,22 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.ExtendElevatorCommand;
+import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.MoveElevatorDownCommand;
+import frc.robot.commands.MoveElevatorUpCommand;
+import frc.robot.commands.OuttakeCommand;
+import frc.robot.commands.RetractElevatorCommand;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -21,11 +32,27 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final DriveSubsystem subsystem = new DriveSubsystem();
-
+  CommandXboxController xboxController = new CommandXboxController(0);
+  private final DriveSubsystem driveSubsystem = new DriveSubsystem(xboxController);
+  private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   private final PowerDistribution powerDistribution = new PowerDistribution(1, ModuleType.kCTRE);
- 
+
+  public RobotContainer(){
+    bindBindings();
+  }
   public void updatePDPVolt() {
     SmartDashboard.putNumber("Greggy Voltage", powerDistribution.getCurrent(0));
+  }
+  private void bindBindings(){
+    xboxController.rightBumper().whileTrue(new MoveElevatorUpCommand(elevatorSubsystem));
+    xboxController.leftBumper().whileTrue(new MoveElevatorDownCommand(elevatorSubsystem));
+
+    xboxController.a().whileTrue(new IntakeCommand(intakeSubsystem));
+    xboxController.x().whileTrue(new OuttakeCommand(intakeSubsystem));
+
+
+    xboxController.y().whileTrue(new ExtendElevatorCommand(elevatorSubsystem));
+    xboxController.b().whileTrue(new RetractElevatorCommand(elevatorSubsystem));
   }
 }

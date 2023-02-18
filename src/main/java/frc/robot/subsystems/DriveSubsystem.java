@@ -3,9 +3,11 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 public class DriveSubsystem extends SubsystemBase {
     private final WPI_TalonSRX rightFrontDriveMotor = new WPI_TalonSRX(2);
@@ -15,9 +17,9 @@ public class DriveSubsystem extends SubsystemBase {
 
     private final DifferentialDrive drive;
 
-    private final XboxController xboxController;
+    private final CommandXboxController xboxController;
 
-    public DriveSubsystem() {
+    public DriveSubsystem(CommandXboxController controller) {
         this.rightFrontDriveMotor.setInverted(true);
         this.backRightDriveMotor.setInverted(true);
 
@@ -30,7 +32,7 @@ public class DriveSubsystem extends SubsystemBase {
         this.backRightDriveMotor.setNeutralMode(NeutralMode.Brake);
 
         this.drive = new DifferentialDrive(leftFrontDriveMotor, rightFrontDriveMotor);
-        this.xboxController = new XboxController(0);
+        this.xboxController = controller;
     }
     
     @Override
@@ -40,6 +42,6 @@ public class DriveSubsystem extends SubsystemBase {
         double xSpeed = -xboxController.getLeftY();
         double zRotation = -xboxController.getRightX();
         
-        drive.arcadeDrive(xSpeed, zRotation);
+        drive.arcadeDrive(MathUtil.clamp(xSpeed, -0.7, 0.7), MathUtil.clamp(zRotation, -0.7, 0.7));
     }
 }
