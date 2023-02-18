@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ElevatorSubsystem extends SubsystemBase{
@@ -25,6 +26,12 @@ public class ElevatorSubsystem extends SubsystemBase{
         //sheathe it, you heathen!
         rElevator.set(-0.2);
         lElevator.set(0.2);
+    }
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("LElevator Encoder: ", lElevator.getEncoder().getPosition());
+        SmartDashboard.putNumber("RElevator Encoder: ", rElevator.getEncoder().getPosition());
+        SmartDashboard.putNumber("Winch Elevator Encoder: ", winch.getEncoder().getPosition());
     }
 
     public CANSparkMax getRightElevator() {

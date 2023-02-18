@@ -15,14 +15,14 @@ public class IntakeSubsystem extends SubsystemBase {
     public CANSparkMax getlIntake() {
         return lIntake;
     }
-    public CANSparkMax getrIntake() {
+    public CANSparkMax getRIntake() {
         return rIntake;
     }
     public void intake(){
-        lIntake.set(-0.8);
+        lIntake.set(-0.7);
     }
     public void outtake(){
-        lIntake.set(0.8);
+        lIntake.set(1);
     }
     public void stop() {
         lIntake.stopMotor();

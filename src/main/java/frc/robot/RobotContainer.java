@@ -5,12 +5,12 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.ExtendElevatorCommand;
-import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.MoveElevatorDownCommand;
-import frc.robot.commands.MoveElevatorUpCommand;
-import frc.robot.commands.OuttakeCommand;
-import frc.robot.commands.RetractElevatorCommand;
+import frc.robot.commands.elevator.ExtendElevatorCommand;
+import frc.robot.commands.elevator.MoveElevatorDownCommand;
+import frc.robot.commands.elevator.MoveElevatorUpCommand;
+import frc.robot.commands.elevator.RetractElevatorCommand;
+import frc.robot.commands.elevator.intake.IntakeCommand;
+import frc.robot.commands.elevator.intake.OuttakeCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -42,17 +42,17 @@ public class RobotContainer {
     bindBindings();
   }
   public void updatePDPVolt() {
-    SmartDashboard.putNumber("Greggy Voltage", powerDistribution.getCurrent(0));
+    SmartDashboard.putNumber("Greggy Voltage", powerDistribution.getCurrent(7));
   }
   private void bindBindings(){
     xboxController.rightBumper().whileTrue(new MoveElevatorUpCommand(elevatorSubsystem));
     xboxController.leftBumper().whileTrue(new MoveElevatorDownCommand(elevatorSubsystem));
 
-    xboxController.a().whileTrue(new IntakeCommand(intakeSubsystem));
-    xboxController.x().whileTrue(new OuttakeCommand(intakeSubsystem));
+    xboxController.rightTrigger().whileTrue(new IntakeCommand(intakeSubsystem));
+    xboxController.leftTrigger().whileTrue(new OuttakeCommand(intakeSubsystem));
 
 
-    xboxController.y().whileTrue(new ExtendElevatorCommand(elevatorSubsystem));
+    xboxController.a().whileTrue(new ExtendElevatorCommand(elevatorSubsystem));
     xboxController.b().whileTrue(new RetractElevatorCommand(elevatorSubsystem));
   }
 }
