@@ -1,10 +1,25 @@
 {
   "SysId": {
-    "Analysis Type": "General Mechanism",
+    "Analysis Type": "Drivetrain",
+    "Generator": {
+      "window": {
+        "visible": false
+      }
+    },
+    "Logger": {
+      "window": {
+        "visible": false
+      }
+    },
     "NetworkTables Settings": {
       "serverTeam": "1672"
     },
-    "mode": "Client (NT3)",
+    "Program Log": {
+      "window": {
+        "visible": false
+      }
+    },
+    "mode": "Client (NT4)",
     "serverTeam": "1672"
   }
 }

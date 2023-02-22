@@ -1,22 +1,22 @@
 package frc.robot.commands.elevator.intake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ArmSubsystem;
 
 public class IntakeCommand extends CommandBase{
-    private IntakeSubsystem intakeSubsystem;
+    private ArmSubsystem armSubsystem;
 
-    public IntakeCommand(IntakeSubsystem intakeSubsystem){
-        addRequirements(intakeSubsystem);
-        this.intakeSubsystem = intakeSubsystem;
+    public IntakeCommand(ArmSubsystem armSubsystem){
+        addRequirements(armSubsystem);
+        this.armSubsystem = armSubsystem;
     }
     @Override
     public void execute() {
-        intakeSubsystem.intake();
+        armSubsystem.intake();
     }
     @Override
     public void end(boolean interrupted) {
-        intakeSubsystem.stop();
+        armSubsystem.stop();
     }
     
 }

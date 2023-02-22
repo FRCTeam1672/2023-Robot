@@ -1,0 +1,60 @@
+"Subsystems"
+===================================================
+Vision
+   - update pose
+	- estimated pose calculated here
+   - photon camera
+   - get camera
+   - get target (?)
+
+Arm
+   - elevator manipulation
+	- move up
+	- move down
+	- extend
+	- retract
+   - move to (set position)
+	- pass in a ArmPosition enum
+   - intake
+	- pass in a GamePiece enum
+   - expel thy game piece! (outtake)
+
+Drive
+   - move yes it do
+   - NAVX (getter) 
+
+
+"Commands"
+===================================================
+
+Auto
+--------
+AutoBalance 
+   - PID Contoller
+	- feed into it our current tilt 
+	- returns us the amount we should move forwards or backwards
+   - will run constantly until it is stopped 
+	- we can stop it by running CommandBase#stop()
+   - DEPEND on DriveSubsystem
+
+Pathplanner
+   - figure out how to make it run 
+   - depend on drive subsystem
+
+
+PickUpFromFloor
+
+Arm
+---------
+
+    Intake
+  =-=-=-=-=
+     PickUpFromSubstation 
+	- Move until we have reached a specific amount for both the winch and the elevator
+   
+    Score
+  =-=-=-=-= 
+     ScoreOnGrid
+	- Get the operator controller, and allow them to be able to select which one they want 
+	- orient ourselves to be able to find which direction we are going to be going to 
+  	

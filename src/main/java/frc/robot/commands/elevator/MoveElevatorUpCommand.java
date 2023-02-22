@@ -1,11 +1,11 @@
 package frc.robot.commands.elevator;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.ArmSubsystem;
 
 public class MoveElevatorUpCommand extends CommandBase{
-     private ElevatorSubsystem elevator;
-    public MoveElevatorUpCommand(ElevatorSubsystem elevator){
+     private ArmSubsystem elevator;
+    public MoveElevatorUpCommand(ArmSubsystem elevator){
         this.elevator = elevator;
      }
      @Override

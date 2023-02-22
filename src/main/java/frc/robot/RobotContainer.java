@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.elevator.ExtendElevatorCommand;
 import frc.robot.commands.elevator.MoveElevatorDownCommand;
 import frc.robot.commands.elevator.MoveElevatorUpCommand;
@@ -12,17 +11,11 @@ import frc.robot.commands.elevator.RetractElevatorCommand;
 import frc.robot.commands.elevator.intake.IntakeCommand;
 import frc.robot.commands.elevator.intake.OuttakeCommand;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.ElevatorSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ArmSubsystem;
 import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -32,27 +25,23 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  CommandXboxController xboxController = new CommandXboxController(0);
-  private final DriveSubsystem driveSubsystem = new DriveSubsystem(xboxController);
-  private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
-  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+  private final CommandXboxController driveController = new CommandXboxController(0);
+  private final CommandXboxController operatorController = new CommandXboxController(1);
+  private final DriveSubsystem driveSubsystem = new DriveSubsystem(driveController);
+  private final ArmSubsystem armSubsystem = new ArmSubsystem();
   private final PowerDistribution powerDistribution = new PowerDistribution(1, ModuleType.kCTRE);
 
   public RobotContainer(){
     bindBindings();
   }
-  public void updatePDPVolt() {
-    SmartDashboard.putNumber("Greggy Voltage", powerDistribution.getCurrent(7));
-  }
   private void bindBindings(){
-    xboxController.rightBumper().whileTrue(new MoveElevatorUpCommand(elevatorSubsystem));
-    xboxController.leftBumper().whileTrue(new MoveElevatorDownCommand(elevatorSubsystem));
+    driveController.rightBumper().whileTrue(new MoveElevatorUpCommand(armSubsystem));
+    driveController.leftBumper().whileTrue(new MoveElevatorDownCommand(armSubsystem));
 
-    xboxController.rightTrigger().whileTrue(new IntakeCommand(intakeSubsystem));
-    xboxController.leftTrigger().whileTrue(new OuttakeCommand(intakeSubsystem));
+    driveController.rightTrigger().whileTrue(new IntakeCommand(armSubsystem));
+    driveController.leftTrigger().whileTrue(new OuttakeCommand(armSubsystem));
 
-
-    xboxController.a().whileTrue(new ExtendElevatorCommand(elevatorSubsystem));
-    xboxController.b().whileTrue(new RetractElevatorCommand(elevatorSubsystem));
+    driveController.a().whileTrue(new ExtendElevatorCommand(armSubsystem));
+    driveController.b().whileTrue(new RetractElevatorCommand(armSubsystem));
   }
 }
