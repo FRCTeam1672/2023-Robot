@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import jdk.nashorn.internal.objects.AccessorPropertyDescriptor;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -55,4 +56,8 @@ public class RobotContainer {
     xboxController.a().whileTrue(new ExtendElevatorCommand(elevatorSubsystem));
     xboxController.b().whileTrue(new RetractElevatorCommand(elevatorSubsystem));
   }
+
+    public DriveSubsystem getDriveSubsystem() {
+      return this.driveSubsystem;
+    }
 }

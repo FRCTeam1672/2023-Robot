@@ -24,9 +24,9 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
  * project.
  */
 public class Robot extends TimedRobot {
-  private Command m_autonomousCommand;
-
   private RobotContainer robotContainer;
+  private Command autoCommand;
+  private PathPlannerTrajectory autoTrajectory;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -37,6 +37,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     robotContainer = new RobotContainer();
+    autoTrajectory = PathPlanner.loadPath("New Path", 3, 3);
   }
 
   /**
@@ -66,7 +67,7 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    
+    autoCommand = robotContainer.getDriveSubsystem().getAutoCommand(autoTrajectory, true);
   }
 
   /** This function is called periodically during autonomous. */
@@ -75,13 +76,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    // This makes sure that the autonomous stops running when
-    // teleop starts running. If you want the autonomous to
-    // continue until interrupted by another command, remove
-    // this line or comment it out.
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
-    }
+    if(autoCommand != null) autoCommand.cancel();
   }
 
   /** This function is called periodically during operator control. */
