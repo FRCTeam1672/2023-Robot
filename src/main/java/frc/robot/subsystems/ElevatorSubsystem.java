@@ -13,7 +13,7 @@ public class ElevatorSubsystem extends SubsystemBase{
     private final CANSparkMax winch = new CANSparkMax(13, MotorType.kBrushless);
     private boolean calibrating = false;
     public ElevatorSubsystem(){
-        SmartDashboard.putData("Home", Commands.runOnce(() -> {
+        SmartDashboard.putData("Home Winch", Commands.runOnce(() -> {
             if(!calibrating){
                 calibrating = true;
                 return;
@@ -35,13 +35,13 @@ public class ElevatorSubsystem extends SubsystemBase{
     }
     public void extend(){
         //extend it a couple of inches 😏
-        rElevator.set(0.2);
-        lElevator.set(-0.2);
+        rElevator.set(0.3);
+        lElevator.set(-0.3);
     }
     public void retract(){
         //sheathe it, you heathen!
-        rElevator.set(-0.2);
-        lElevator.set(0.2);
+        rElevator.set(-0.3);
+        lElevator.set(0.3);
     }
     @Override
     public void periodic() {

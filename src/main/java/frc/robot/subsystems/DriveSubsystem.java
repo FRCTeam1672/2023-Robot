@@ -42,6 +42,6 @@ public class DriveSubsystem extends SubsystemBase {
         double xSpeed = -xboxController.getLeftY();
         double zRotation = -xboxController.getRightX();
         
-        drive.arcadeDrive(MathUtil.clamp(xSpeed, -0.7, 0.7), MathUtil.clamp(zRotation, -0.7, 0.7));
+        drive.arcadeDrive(MathUtil.clamp(xSpeed, -0.7, 0.7), MathUtil.clamp(zRotation, -0.95, 0.95));
    }
 }
