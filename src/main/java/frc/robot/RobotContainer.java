@@ -7,15 +7,17 @@ import frc.robot.Node.Position;
 import frc.robot.commands.CommandFactory;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 public class RobotContainer {
   private final CommandXboxController driverController = new CommandXboxController(0);
-  private final CommandXboxController operatorController = new CommandXboxController(1);
+  // for 2p controls: private final CommandXboxController operatorController = new CommandXboxController(1);
 
-  private final DriveSubsystem driveSubsystem = new DriveSubsystem();
+  private final VisionSubsystem visionSubsystem = new VisionSubsystem();
+  private final DriveSubsystem driveSubsystem = new DriveSubsystem(visionSubsystem);
   private final ArmSubsystem armSubsystem = new ArmSubsystem();
 
   private final Command winCommand = CommandFactory.win(this, driveSubsystem, armSubsystem);
@@ -48,10 +50,18 @@ public class RobotContainer {
     driverController.leftBumper().whileTrue(groundIntakeCommand);
     driverController.rightBumper().whileTrue(shelfIntakeCommand);
 
+    // 1p controls, driver selects target
+    driverController.leftStick().onTrue(cycleTargetHeight());
+    driverController.leftTrigger(0.3).debounce(0.1).onTrue(moveTargetNode(0, -1));
+    driverController.rightTrigger(0.3).debounce(0.1).onTrue(moveTargetNode(0, 1));
+
+    // 2p controls, operator selects target
+    /*
     operatorController.leftBumper().onTrue(moveTargetNode(0, -1));
     operatorController.rightBumper().onTrue(moveTargetNode(0, 1));
     operatorController.leftTrigger(0.8).debounce(0.25).onTrue(moveTargetNode(-1, 0));
     operatorController.rightTrigger(0.8).debounce(0.25).onTrue(moveTargetNode(1, 0));
+    */
   }
 
   public void initDashboard() {
@@ -70,12 +80,17 @@ public class RobotContainer {
     SmartDashboard.putString("Target Node", targetNode.toString());
   }
 
-  public Command moveTargetNode(int dy, int dx) {
-    return Commands.run(() -> {
+  private Command moveTargetNode(int dy, int dx) {
+    return Commands.runOnce(() -> {
       int height = clamp(targetNode.height.ordinal()+dy, 0, 2);
       int position = clamp(targetNode.position.ordinal()+dx, 0, 8);
 
       setTargetNode(Height.values()[height], Position.values()[position]);
+    });
+  }
+  private Command cycleTargetHeight() {
+    return Commands.runOnce(() -> {
+      setTargetNode(Height.values()[(targetNode.height.ordinal()+3) % 3], targetNode.position);
     });
   }
 

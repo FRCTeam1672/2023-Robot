@@ -1,5 +1,10 @@
 package frc.robot;
 
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
+
 public final class Constants {
   public static final class Drive {
     public static final int LEFT_LEADER_ID = 10;
@@ -9,6 +14,29 @@ public final class Constants {
 
     public static final double CURVECADE_TURN_SCALE = 0.5;
     public static final double CURVECADE_THRESHOLD = 0.15; 
+
+    public static final class DrivePID {
+      public static final double ksVolts = 0;
+      public static final double kvVoltSecondsPerMeter = 0;
+      public static final double kaVoltSecondsSquaredPerMeter = 0;
+      public static final DifferentialDriveKinematics kDriveKinematics = null;
+      public static final double kMaxVoltage = 0;
+      public static final double kMaxSpeedMetersPerSecond = 0;
+      public static final double kMaxAccelerationMetersPerSecondSquared = 0;
+      public static final double kRamseteB = 0;  
+      public static final double kRamseteZeta = 0; 
+      public static final double kPDriveVel = 0;
+
+      public static final DifferentialDriveVoltageConstraint autoVoltageConstraint =
+          new DifferentialDriveVoltageConstraint(new SimpleMotorFeedforward(ksVolts, kvVoltSecondsPerMeter, kaVoltSecondsSquaredPerMeter), kDriveKinematics, kMaxVoltage);
+
+      public static final TrajectoryConfig TRAJECTORY_CONFIG =
+      new TrajectoryConfig(
+              DrivePID.kMaxSpeedMetersPerSecond,
+              DrivePID.kMaxAccelerationMetersPerSecondSquared)
+          .setKinematics(DrivePID.kDriveKinematics)
+          .addConstraint(autoVoltageConstraint);
+    }
   }
 
   public static final class Arm {
