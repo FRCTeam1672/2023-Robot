@@ -15,6 +15,6 @@ public class RetractElevatorCommand extends CommandBase{
      }
      @Override
      public void end(boolean interrupted) {
-         elevator.stopElevators();
+         elevator.stopElevator();
      }
 }

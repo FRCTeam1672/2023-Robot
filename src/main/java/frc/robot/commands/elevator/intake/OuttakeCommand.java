@@ -16,7 +16,7 @@ public class OuttakeCommand extends CommandBase{
     }
     @Override
     public void end(boolean interrupted) {
-        armSubsystem.stop();
+        armSubsystem.stopIntake();
     }
     
 }
