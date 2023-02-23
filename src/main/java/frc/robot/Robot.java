@@ -68,6 +68,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     autoCommand = robotContainer.getDriveSubsystem().getAutoCommand(autoTrajectory, true);
+    autoCommand.schedule();
   }
 
   /** This function is called periodically during autonomous. */

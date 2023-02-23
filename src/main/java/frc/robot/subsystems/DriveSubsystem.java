@@ -13,9 +13,11 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -28,6 +30,14 @@ import frc.robot.TalonEncoder;
 import static frc.robot.Constants.DriveCharacteristics.*;
 
 public class DriveSubsystem extends SubsystemBase {
+
+    final int kCountsPerRev = 4096;  //Encoder counts per revolution of the motor shaft.
+    final double kSensorGearRatio = 1; //Gear ratio is the ratio between the *encoder* and the wheels.  On the AndyMark drivetrain, encoders mount 1:1 with the gearbox shaft.
+    final double kGearRatio = 10.71; //Switch kSensorGearRatio to this gear ratio if encoder is on the motor instead of on the gearbox.
+    final double kWheelRadiusInches = 3;
+    final int k100msPerSecond = 10;
+
+
     private final WPI_TalonSRX rightFrontDriveMotor = new WPI_TalonSRX(2);
     private final WPI_TalonSRX leftFrontDriveMotor = new WPI_TalonSRX(3);
     private final WPI_TalonSRX backRightDriveMotor = new WPI_TalonSRX(4);
@@ -47,6 +57,7 @@ public class DriveSubsystem extends SubsystemBase {
     private final TalonEncoder leftEncoder = new TalonEncoder(leftFrontDriveMotor);
 
     public DriveSubsystem(CommandXboxController controller) {
+        SmartDashboard.putData("Field", field);
         navX.zeroYaw();
         currentPose = new Pose2d(0, 0, new Rotation2d(0));
         this.rightFrontDriveMotor.setInverted(true);
@@ -62,16 +73,28 @@ public class DriveSubsystem extends SubsystemBase {
 
         this.drive = new DifferentialDrive(leftFrontDriveMotor, rightFrontDriveMotor);
         this.xboxController = controller;
-        odometry = new DifferentialDriveOdometry(navX.getRotation2d(), 0, 0);
+        Rotation2d rotation = new Rotation2d(Math.toRadians(-90 + navX.getFusedHeading()));
+
+        odometry = new DifferentialDriveOdometry(rotation, 0, 0);
         leftEncoder.setDistancePerPulse(ENCODER_DISTANCE_PER_PULSE);
         rightEncoder.setDistancePerPulse(ENCODER_DISTANCE_PER_PULSE);
 
+        leftEncoder.reset();
+        rightEncoder.reset();
     }
-
+    private double nativeUnitsToDistanceMeters(double sensorCounts){
+        double motorRotations = (double)sensorCounts / kCountsPerRev;
+        double wheelRotations = motorRotations / kSensorGearRatio;
+        double positionMeters = wheelRotations * (2 * Math.PI * Units.inchesToMeters(kWheelRadiusInches));
+        return positionMeters;
+      }
     @Override
     public void periodic() {
-        odometry.update(navX.getRotation2d(), leftEncoder.getDistance(), rightEncoder.getDistance());
-        field.setRobotPose(currentPose);
+        Rotation2d rotation = new Rotation2d(Math.toRadians(-90 + navX.getFusedHeading()));
+        SmartDashboard.putNumber("Left Encoder Distance", leftEncoder.getDistance());
+        SmartDashboard.putNumber("Right Encoder Distance", rightEncoder.getDistance());
+        odometry.update(rotation, nativeUnitsToDistanceMeters(leftFrontDriveMotor.getSelectedSensorPosition()), nativeUnitsToDistanceMeters(rightFrontDriveMotor.getSelectedSensorPosition()));
+        field.setRobotPose(odometry.getPoseMeters());
         // grab controller X and Y vales
         // pass to DifferentialDrive arcadedrive (x foward, y rotate)
         double xSpeed = -xboxController.getLeftY();
@@ -115,6 +138,6 @@ public class DriveSubsystem extends SubsystemBase {
                         true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
                         this // Requires this drive subsystem
                 )
-        ).handleInterrupt(drive::stopMotor);
+        ).andThen(drive::stopMotor, this).handleInterrupt(drive::stopMotor);
     }
 }

@@ -1,6 +1,6 @@
 {
   "SysId": {
-    "Analysis Type": "Drivetrain",
+    "Analysis Type": "General Mechanism",
     "Generator": {
       "window": {
         "visible": false
@@ -12,7 +12,10 @@
       }
     },
     "NetworkTables Settings": {
-      "serverTeam": "1672"
+      "serverTeam": "1672",
+      "window": {
+        "visible": false
+      }
     },
     "Program Log": {
       "window": {

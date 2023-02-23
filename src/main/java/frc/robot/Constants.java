@@ -19,24 +19,24 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
   public static class DriveCharacteristics {
-    public static final double Ks =  1.5089;
-    public static final double Kv = 2.3322;
-    public static final double Ka = 1.1693;
-    public static final double Kp = 4.0742;
+    public static final double Ks =  1.65322;
+    public static final double Kv = 2.46996;
+    public static final double Ka = 1.2137;
+    public static final double Kp = 3.42974;
     public static final double Kd = 0.0;
 
     //TODO CHANGE THIS!
-    public static final double trackWidthMeters = 0.69;
+    public static final double trackWidthMeters = 0.5588;
     public static final DifferentialDriveKinematics DRIVE_KINEMATICS = new DifferentialDriveKinematics(trackWidthMeters);
 
     public static final double MAX_SPEED_METERS_PER_SECOND = 3;
     public static final double MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 1;
 
-    public static final int ENCODER_CPR = 1024;
+    public static final int ENCODER_CPR = 4028;
     public static final double WHEEL_DIAMETER_METERS = 0.15;
-    public static final double ENCODER_DISTANCE_PER_PULSE =
-            // Assumes the encoders are directly mounted on the wheel shafts
-            (WHEEL_DIAMETER_METERS * Math.PI) / (double) ENCODER_CPR;
+    public static final double GEAR_RATIO = 8.45/1;
+    public static final double ENCODER_GEAR_RATIO = 1;
+    public static final double ENCODER_DISTANCE_PER_PULSE = Math.PI * WHEEL_DIAMETER_METERS / ENCODER_CPR / ENCODER_GEAR_RATIO / GEAR_RATIO * 1;
 
     public static final double ramseteB = 2;
     public static final double ramseteZeta = 0.7;
