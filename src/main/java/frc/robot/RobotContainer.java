@@ -15,8 +15,10 @@ import frc.robot.commands.elevator.intake.IntakeCommand;
 import frc.robot.commands.elevator.intake.OuttakeCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ArmSubsystem;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -36,6 +38,8 @@ public class RobotContainer {
   private final ArmSubsystem armSubsystem = new ArmSubsystem();
   private final PowerDistribution powerDistribution = new PowerDistribution(1, ModuleType.kCTRE);
 
+  private final ADXRS450_Gyro gyro = new ADXRS450_Gyro();
+
   private final Targeter targeter = new Targeter();
 
   public RobotContainer(){
@@ -50,6 +54,8 @@ public class RobotContainer {
 
     driveController.a().whileTrue(new ExtendElevatorCommand(armSubsystem));
     driveController.b().whileTrue(new RetractElevatorCommand(armSubsystem));
+
+    driveController.y().whileTrue(Commands.run(() -> SmartDashboard.putNumber("Elevator angle", gyro.getAngle())));
 
     operatorController.start().onTrue(targeter.target(null, HYBRID_LEFT));
     operatorController.back().onTrue(targeter.target(null, HYBRID_CENTER));
