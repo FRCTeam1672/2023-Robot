@@ -4,16 +4,22 @@
 
 package frc.robot;
 
-/**
- * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
- * constants. This class should not be used for any other purpose. All constants should be declared
- * globally (i.e. public static). Do not put anything functional in this class.
- *
- * <p>It is advised to statically import this class (or one of its inner classes) wherever the
- * constants are needed, to reduce verbosity.
- */
 public final class Constants {
-  public static class OperatorConstants {
-    public static final int kDriverControllerPort = 0;
+  // Whether tunable numbers can be changed from Shuffleboard.
+  public static final boolean tuningMode = false;
+
+  public static final class Elevator {
+    public static final TunableNumber GROUND_ANGLE = new TunableNumber("Ground Angle", 6);
+    public static final TunableNumber HYBRID_ANGLE = new TunableNumber("Hybrid Angle", 6);
+    public static final TunableNumber MID_ANGLE = new TunableNumber("Mid Angle", 6);
+    public static final TunableNumber HIGH_ANGLE = new TunableNumber("High Angle", 6);
+    public static final TunableNumber SHELF_ANGLE = new TunableNumber("Shelf Angle", 6);
+    public static final TunableNumber GROUND_EXTENSION = new TunableNumber("Ground Extension", 6);
+    public static final TunableNumber HYBRID_EXTENSION = new TunableNumber("Hybrid Extension", 6);
+    public static final TunableNumber MID_EXTENSION = new TunableNumber("Mid Extension", 6);
+    public static final TunableNumber HIGH_EXTENSION = new TunableNumber("High Extension", 6);
+    public static final TunableNumber SHELF_EXTENSION = new TunableNumber("Shelf Extension", 6);
+
+    public static final TunableNumber INTAKE_CURRENT_CAP = new TunableNumber("Intake Current Cap", 20);
   }
 }

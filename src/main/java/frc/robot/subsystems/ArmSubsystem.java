@@ -8,10 +8,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.commands.elevator.RunForCommand;
+import frc.robot.Constants;
+import frc.robot.Node;
+import frc.robot.commands.elevator.TimerCommand;
+
+import static frc.robot.Constants.Elevator.*;
 
 public class ArmSubsystem extends SubsystemBase {
-    private boolean calibrating = false;
+    private boolean calibrating = Constants.tuningMode;
 
     private final CANSparkMax rIntake = new CANSparkMax(21, MotorType.kBrushless);
     private final CANSparkMax lIntake = new CANSparkMax(22, MotorType.kBrushless);
@@ -21,6 +25,7 @@ public class ArmSubsystem extends SubsystemBase {
     private final CANSparkMax winch = new CANSparkMax(13, MotorType.kBrushless);
     
     private final DigitalInput bottomElevatorLimitSwitch = new DigitalInput(9);
+    private final DigitalInput winchAngleLimitSwitch = new DigitalInput(8);
 
     public ArmSubsystem() {
         rIntake.follow(lIntake);
@@ -81,6 +86,10 @@ public class ArmSubsystem extends SubsystemBase {
         lIntake.stopMotor();
         rIntake.stopMotor();
     }
+
+    private boolean isStowed() {
+        return !(bottomElevatorLimitSwitch.get() || winchAngleLimitSwitch.get());
+    }
     
     @Override
     public void periodic() {
@@ -113,30 +122,64 @@ public class ArmSubsystem extends SubsystemBase {
         }).until(() -> Math.abs(lElevator.getEncoder().getPosition() - encoderPosition) < ERROR);
     }
 
-    public Command getSubstationIntakeCommand() {
-        return Commands
-                .parallel(
-                        Commands.run(this::moveUp).until(() -> {
-                            return winch.getEncoder().getPosition() >= 500 ? true : false;
-                        }),
-                        Commands.run(this::extend).until(() -> {
-                            return lElevator.getEncoder().getPosition() >= 500 ? true : false;
-                        }))
-                .andThen(new RunForCommand(this::intake, 3), null)
-                .andThen(
-                        Commands.parallel(
-                                Commands.run(this::moveDown).until(() -> {
-                                    return winch.getEncoder().getPosition() <= 0 ? true : false;
-                                }),
-                                Commands.run(this::retract).until(() -> {
-                                    return lElevator.getEncoder().getPosition() <= 0 ? true : false;
-                                })));
+    private Command getStowCommand() {
+        return Commands.parallel(
+            Commands.run(this::retract), Commands.run(this::moveUp)
+        ).until(this::isStowed);
     }
 
-    public Command getScoreHighCommand() {
+    private Command getIntakeCommand() {
+        return Commands.run(this::intake).until(() -> this.lIntake.getOutputCurrent()+this.rIntake.getOutputCurrent() > INTAKE_CURRENT_CAP.get());
+    }
+
+    private Command getScoreHybridCommand() {
         return Commands.parallel(
-            setAngle(60),
-            setExtension(120)
-        ).andThen(new RunForCommand(this::outtake, 3));
+            setAngle(HYBRID_ANGLE.get()),
+            setExtension(HYBRID_EXTENSION.get())
+        ).andThen(new TimerCommand(this::outtake, 2))
+        .finallyDo(e -> getStowCommand().schedule());
+    }
+
+    private Command getScoreMidCommand() {
+        return Commands.parallel(
+            setAngle(MID_ANGLE.get()),
+            setExtension(MID_EXTENSION.get())
+        ).andThen(new TimerCommand(this::outtake, 2))
+        .finallyDo(e -> getStowCommand().schedule());
+    }
+
+    private Command getScoreHighCommand() {
+        return Commands.parallel(
+            setAngle(HIGH_ANGLE.get()),
+            setExtension(HIGH_EXTENSION.get())
+        ).andThen(new TimerCommand(this::outtake, 2))
+        .finallyDo(e -> getStowCommand().schedule());
+    }
+
+    public Command getScoreCommand(Node.Height nodeHeight) {
+        switch(nodeHeight) {
+            case HIGH: return getScoreHighCommand();
+            case MID: return getScoreMidCommand();
+            case HYBRID: return getScoreHybridCommand();
+            default: return null;
+        }
+    }
+
+    public Command getShelfIntakeCommand() {
+        return Commands.parallel(
+            setAngle(SHELF_ANGLE.get()),
+            setExtension(SHELF_EXTENSION.get()),
+            getIntakeCommand()
+        )
+        .finallyDo(e -> getStowCommand().schedule());
+    }
+
+    public Command getGroundIntakeCommand() {
+        return Commands.parallel(
+            setAngle(GROUND_ANGLE.get()),
+            setExtension(GROUND_EXTENSION.get()),
+            getIntakeCommand()
+        )
+        .finallyDo(e -> getStowCommand().schedule());
     }
 }
