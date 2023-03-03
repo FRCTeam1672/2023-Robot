@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -12,6 +14,9 @@ public class ElevatorSubsystem extends SubsystemBase{
     private final CANSparkMax lElevator = new CANSparkMax(12, MotorType.kBrushless);
     private final CANSparkMax winch = new CANSparkMax(13, MotorType.kBrushless);
     private boolean calibrating = false;
+
+    private final DigitalInput bottomElevatorLimitSwitch = new DigitalInput(0);
+    private final ADXRS450_Gyro elevatorGyro = new ADXRS450_Gyro();
     public ElevatorSubsystem(){
         SmartDashboard.putData("Home Winch", Commands.runOnce(() -> {
             if(!calibrating){
@@ -23,15 +28,18 @@ public class ElevatorSubsystem extends SubsystemBase{
         }, this).ignoringDisable(true));
     }
     public void moveDown(){
+        // if(elevatorGyro.getAngle() <= 80){
+        //     winch.stopMotor();
+        //     return;
+        // }
         winch.set(-0.5);
     }
     public void moveUp(){
-
-        if(winch.getEncoder().getPosition() >= -3 && !calibrating) {
-            stopWinch();
-            return;
-        }
-        winch.set(0.75);
+        // if(elevatorGyro.getAngle() >= 10) {
+        //     stopWinch();
+        //     return;
+        // }
+        winch.set(0.85);
     }
     public void extend(){
         //extend it a couple of inches 😏
@@ -39,6 +47,11 @@ public class ElevatorSubsystem extends SubsystemBase{
         lElevator.set(-0.3);
     }
     public void retract(){
+        // if(bottomElevatorLimitSwitch.get()) {
+        //     rElevator.stopMotor();
+        //     return;
+        // }
+
         //sheathe it, you heathen!
         rElevator.set(-0.3);
         lElevator.set(0.3);
