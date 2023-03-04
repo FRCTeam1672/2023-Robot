@@ -14,6 +14,7 @@ import frc.robot.commands.elevator.intake.OuttakeCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LEDLightSubsystem;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
@@ -33,11 +34,14 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   CommandXboxController xboxController = new CommandXboxController(0);
-  private final DriveSubsystem driveSubsystem = new DriveSubsystem(xboxController);
+  private final DriveSubsystem driveSubsystem = new DriveSubsystem(xboxController, this);
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   private final PowerDistribution powerDistribution = new PowerDistribution(1, ModuleType.kCTRE);
-
+  private final LEDLightSubsystem lightSubsystem = new LEDLightSubsystem();
+  public LEDLightSubsystem getLightSubsystem() {
+    return lightSubsystem;
+  }
   public RobotContainer(){
     bindBindings();
   }

@@ -27,18 +27,19 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.RobotContainer;
 import frc.robot.TalonEncoder;
+import frc.robot.subsystems.LEDLightSubsystem.LedState;
 
 public class DriveSubsystem extends SubsystemBase {
 
     final int kCountsPerRev = 4096; // Encoder counts per revolution of the motor shaft.
     final double kSensorGearRatio = 1; // Gear ratio is the ratio between the *encoder* and the wheels. On the AndyMark
                                        // drivetrain, encoders mount 1:1 with the gearbox shaft.
-    final double kGearRatio = 10.71; // Switch kSensorGearRatio to this gear ratio if encoder is on the motor instead
-                                     // of on the gearbox.
     final double kWheelRadiusInches = 3;
     final int k100msPerSecond = 10;
 
@@ -58,8 +59,10 @@ public class DriveSubsystem extends SubsystemBase {
 
     private final TalonEncoder rightEncoder = new TalonEncoder(rightFrontDriveMotor);
     private final TalonEncoder leftEncoder = new TalonEncoder(leftFrontDriveMotor);
-
-    public DriveSubsystem(CommandXboxController controller) {
+    private final RobotContainer robotContainer;
+    public DriveSubsystem(CommandXboxController controller, RobotContainer robotContainer) {
+        this.robotContainer = robotContainer;
+        navX.calibrate();
         SmartDashboard.putData("Field", field);
         this.rightFrontDriveMotor.setInverted(true);
         this.backRightDriveMotor.setInverted(true);
@@ -74,9 +77,8 @@ public class DriveSubsystem extends SubsystemBase {
 
         this.drive = new DifferentialDrive(leftFrontDriveMotor, rightFrontDriveMotor);
         this.xboxController = controller;
-        Rotation2d rotation = new Rotation2d(Math.toRadians(navX.getFusedHeading()));
 
-        odometry = new DifferentialDriveOdometry(rotation, 0, 0);
+        odometry = new DifferentialDriveOdometry(navX.getRotation2d(), 0, 0);
         leftEncoder.setDistancePerPulse(ENCODER_DISTANCE_PER_PULSE);
         rightEncoder.setDistancePerPulse(ENCODER_DISTANCE_PER_PULSE);
 
@@ -98,13 +100,13 @@ public class DriveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Right Encoder Distance", rightFrontDriveMotor.getSelectedSensorPosition());
         odometry.update(rotation, nativeUnitsToDistanceMeters(-leftFrontDriveMotor.getSelectedSensorPosition()),
                 nativeUnitsToDistanceMeters(-rightFrontDriveMotor.getSelectedSensorPosition()));
-        field.setRobotPose(new Pose2d(0, 0, rotation));
+        field.setRobotPose(odometry.getPoseMeters());
         // grab controller X and Y vales
         // pass to DifferentialDrive arcadedrive (x foward, y rotate)
         double xSpeed = -xboxController.getLeftY();
         double zRotation = -xboxController.getRightX();
 
-        drive.arcadeDrive(MathUtil.clamp(xSpeed, -0.7, 0.7), MathUtil.clamp(zRotation, -0.7, 0.7));
+        drive.arcadeDrive(MathUtil.clamp(xSpeed, -0.83, 0.83), MathUtil.clamp(zRotation, -0.7, 0.7));
     }
 
     public Pose2d getPose() {
@@ -131,6 +133,8 @@ public class DriveSubsystem extends SubsystemBase {
                     // Reset odometry for the first path you run during auto
                     if (isFirstPath) {
                         odometry.resetPosition(navX.getRotation2d(), 0, 0, traj.getInitialPose());
+                        rightFrontDriveMotor.setSelectedSensorPosition(0);
+                        leftFrontDriveMotor.setSelectedSensorPosition(0);
                     }
                 }),
                 new PPRamseteCommand(
@@ -146,6 +150,13 @@ public class DriveSubsystem extends SubsystemBase {
                         true, // Should the path be automatically mirrored depending on alliance color.
                               // Optional, defaults to true
                         this // Requires this drive subsystem
-                )).andThen(drive::stopMotor, this).handleInterrupt(drive::stopMotor);
+                ),
+                new InstantCommand(
+                    () -> {
+                        robotContainer.getLightSubsystem().setState(LedState.YELLOW);
+                    }
+                )
+                
+        );
     }
 }
