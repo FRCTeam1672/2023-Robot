@@ -1,6 +1,6 @@
 package frc.robot.subsystems;
 
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
@@ -10,52 +10,68 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class LEDLightSubsystem extends SubsystemBase {
     private final AddressableLED addressableLED = new AddressableLED(7);
     private final AddressableLEDBuffer addressableLEDBuffer = new AddressableLEDBuffer(150);
-    private int rainbowFirstPixelHue = 0;
-    private LedState currentState = LedState.RED;
+    private LedState currentState = LedState.REDPULSE;
+    private PersistentLedState persistentLedState = new PersistentLedState();
+
+    private class PersistentLedState {
+        public int rainbowFirstPixelHue = 0;
+        public int pulseOffset = 0;
+    }
 
     public enum LedState {
-        RED((ledBuffer) -> {
+        RED((ledBuffer, persistentState) -> {
             for (int i = 0; i < ledBuffer.getLength(); i++) {
                 ledBuffer.setRGB(i, 255, 0, 0);
             }
         }),
-        BLUE((ledBuffer) -> {
+        BLUE((ledBuffer, persistentState) -> {
             for (int i = 0; i < ledBuffer.getLength(); i++) {
                 ledBuffer.setRGB(i, 0, 0, 255);
             }
         }),
-        PURPLE((ledBuffer) -> {
+        PURPLE((ledBuffer, persistentState) -> {
             for (int i = 0; i < ledBuffer.getLength(); i++) {
                 ledBuffer.setRGB(i, 145, 0, 255);
             }
         }),
-        YELLOW((ledBuffer) -> {
+        YELLOW((ledBuffer, persistentState) -> {
             for (int i = 0; i < ledBuffer.getLength(); i++) {
                 ledBuffer.setRGB(i, 255, 225, 0);
             }
         }),
-        REDPULSE((ledBuffer) -> {
-            // TODO: make it actually pulse like it's really angry
-            for (int i = 0; i < ledBuffer.getLength(); i++) {
-                ledBuffer.setRGB(i, 255, 0, 0);
+        REDPULSE((ledBuffer, persistentState) -> {
+            int intensity = 255 - persistentState.pulseOffset;
+            for (int i = 0; i < ledBuffer.getLength() / 2 + 1; i++) {
+                ledBuffer.setRGB(i, (intensity + i) % 255, 0, 0);
+                ledBuffer.setRGB(ledBuffer.getLength()-1-i, (intensity + i) % 255, 0, 0);
             }
+            persistentState.pulseOffset = (persistentState.pulseOffset + 3) % 255;
         }),
-        BLUEPULSE((ledBuffer) -> {
-            // TODO: make it actually pulse kinda like it's hurting
-            for (int i = 0; i < ledBuffer.getLength(); i++) {
-                ledBuffer.setRGB(i, 0, 0, 255);
+        BLUEPULSE((ledBuffer, persistentState) -> {
+            int intensity = 255 - persistentState.pulseOffset;
+            for (int i = 0; i < ledBuffer.getLength() / 2 + 1; i++) {
+                ledBuffer.setRGB(i, 0, 0, (intensity + i) % 255);
+                ledBuffer.setRGB(ledBuffer.getLength()-1-i, 0, 0, (intensity + i) % 255);
             }
+            persistentState.pulseOffset = (persistentState.pulseOffset + 3) % 255;
         }),
-        RAINBOW((ledBuffer) -> {
-
+        RAINBOW((ledBuffer, persistentState) -> {
+            for (int i = 0; i < ledBuffer.getLength(); i++) {
+                final int hue = (persistentState.rainbowFirstPixelHue + (i * 180 / ledBuffer.getLength())) % 180;
+                ledBuffer.setHSV(i, hue, 255, 128);
+            }
+            persistentState.rainbowFirstPixelHue += 3;
+            persistentState.rainbowFirstPixelHue %= 180;
         }),
-        OFF((ledBuffer) -> {
-
+        OFF((ledBuffer, persistentState) -> {
+            for (int i = 0; i < ledBuffer.getLength(); i++) {
+                ledBuffer.setRGB(i, 0, 0, 0);
+            }
         });
 
-        public final Consumer<AddressableLEDBuffer> setBuffer;
+        public final BiConsumer<AddressableLEDBuffer, PersistentLedState> setBuffer;
 
-        LedState(Consumer<AddressableLEDBuffer> bufferSetter) {
+        LedState(BiConsumer<AddressableLEDBuffer, PersistentLedState> bufferSetter) {
             setBuffer = bufferSetter;
         }
     }
@@ -68,27 +84,12 @@ public class LEDLightSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if(DriverStation.isEnabled()){
-            currentState.setBuffer.accept(addressableLEDBuffer);
+        if(DriverStation.isEnabled()) {
+            currentState.setBuffer.accept(addressableLEDBuffer, persistentLedState);
         }
         else{
             
         }
         addressableLED.setData(addressableLEDBuffer);
-    }
-
-    private void rainbow() {
-        // For every pixel
-        for (var i = 0; i < addressableLEDBuffer.getLength(); i++) {
-            // Calculate the hue - hue is easier for rainbows because the color
-            // shape is a circle so only one value needs to precess
-            final var hue = (rainbowFirstPixelHue + (i * 180 / addressableLEDBuffer.getLength())) % 180;
-            // Set the value
-            addressableLEDBuffer.setHSV(i, hue, 255, 128);
-        }
-        // Increase by to make the rainbow "move"
-        rainbowFirstPixelHue += 3;
-        // Check bounds
-        rainbowFirstPixelHue %= 180;
     }
 }
