@@ -43,8 +43,8 @@ public class ElevatorSubsystem extends SubsystemBase{
     }
     public void extend(){
         //extend it a couple of inches 😏
-        rElevator.set(0.3);
-        lElevator.set(-0.3);
+        rElevator.set(0.4);
+        lElevator.set(-0.4);
     }
     public void retract(){
         // if(bottomElevatorLimitSwitch.get()) {
@@ -53,8 +53,8 @@ public class ElevatorSubsystem extends SubsystemBase{
         // }
 
         //sheathe it, you heathen!
-        rElevator.set(-0.3);
-        lElevator.set(0.3);
+        rElevator.set(-0.4);
+        lElevator.set(0.4);
     }
     @Override
     public void periodic() {

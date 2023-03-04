@@ -5,6 +5,7 @@ import java.util.function.BiConsumer;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LEDLightSubsystem extends SubsystemBase {
@@ -45,7 +46,7 @@ public class LEDLightSubsystem extends SubsystemBase {
                 ledBuffer.setRGB(i, (intensity + i) % 255, 0, 0);
                 ledBuffer.setRGB(ledBuffer.getLength()-1-i, (intensity + i) % 255, 0, 0);
             }
-            persistentState.pulseOffset = (persistentState.pulseOffset + 3) % 255;
+            persistentState.pulseOffset = (persistentState.pulseOffset + 7) % 255;
         }),
         BLUEPULSE((ledBuffer, persistentState) -> {
             int intensity = 255 - persistentState.pulseOffset;
@@ -53,7 +54,7 @@ public class LEDLightSubsystem extends SubsystemBase {
                 ledBuffer.setRGB(i, 0, 0, (intensity + i) % 255);
                 ledBuffer.setRGB(ledBuffer.getLength()-1-i, 0, 0, (intensity + i) % 255);
             }
-            persistentState.pulseOffset = (persistentState.pulseOffset + 3) % 255;
+            persistentState.pulseOffset = (persistentState.pulseOffset + 7) % 255;
         }),
         RAINBOW((ledBuffer, persistentState) -> {
             for (int i = 0; i < ledBuffer.getLength(); i++) {
@@ -82,14 +83,31 @@ public class LEDLightSubsystem extends SubsystemBase {
         addressableLED.start();
     }
 
+    public void setState(LedState state) {
+        currentState = state;
+    }
+
+    public void idle() {
+        Alliance alliance = DriverStation.getAlliance();
+        boolean enabled = DriverStation.isEnabled();
+
+        if(alliance == Alliance.Blue) {
+            currentState = enabled ? LedState.BLUEPULSE : LedState.BLUE;
+        } else if(alliance == Alliance.Red) {
+            currentState = enabled ? LedState.REDPULSE : LedState.RED;
+        } else {
+            currentState = LedState.RAINBOW;
+        }
+    }
+    public void setColor(LedState ledState){
+        this.currentState = ledState;
+    }
+
     @Override
     public void periodic() {
-        if(DriverStation.isEnabled()) {
-            currentState.setBuffer.accept(addressableLEDBuffer, persistentLedState);
-        }
-        else{
-            
-        }
+        if(!DriverStation.isEnabled()) idle();
+        else setColor(LedState.RAINBOW); 
+        currentState.setBuffer.accept(addressableLEDBuffer, persistentLedState);
         addressableLED.setData(addressableLEDBuffer);
     }
 }
