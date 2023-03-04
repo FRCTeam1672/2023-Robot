@@ -1,10 +1,17 @@
-package frc.robot.subsystems;
+    package frc.robot.subsystems;
+
+import static frc.robot.Constants.DriveCharacteristics.DRIVE_KINEMATICS;
+import static frc.robot.Constants.DriveCharacteristics.ENCODER_DISTANCE_PER_PULSE;
+import static frc.robot.Constants.DriveCharacteristics.Ka;
+import static frc.robot.Constants.DriveCharacteristics.Ks;
+import static frc.robot.Constants.DriveCharacteristics.Kv;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPRamseteCommand;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
@@ -23,20 +30,17 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants;
-import frc.robot.Constants.DriveCharacteristics;
 import frc.robot.TalonEncoder;
-
-import static frc.robot.Constants.DriveCharacteristics.*;
 
 public class DriveSubsystem extends SubsystemBase {
 
-    final int kCountsPerRev = 4096;  //Encoder counts per revolution of the motor shaft.
-    final double kSensorGearRatio = 1; //Gear ratio is the ratio between the *encoder* and the wheels.  On the AndyMark drivetrain, encoders mount 1:1 with the gearbox shaft.
-    final double kGearRatio = 10.71; //Switch kSensorGearRatio to this gear ratio if encoder is on the motor instead of on the gearbox.
+    final int kCountsPerRev = 4096; // Encoder counts per revolution of the motor shaft.
+    final double kSensorGearRatio = 1; // Gear ratio is the ratio between the *encoder* and the wheels. On the AndyMark
+                                       // drivetrain, encoders mount 1:1 with the gearbox shaft.
+    final double kGearRatio = 10.71; // Switch kSensorGearRatio to this gear ratio if encoder is on the motor instead
+                                     // of on the gearbox.
     final double kWheelRadiusInches = 3;
     final int k100msPerSecond = 10;
-
 
     private final WPI_TalonSRX rightFrontDriveMotor = new WPI_TalonSRX(2);
     private final WPI_TalonSRX leftFrontDriveMotor = new WPI_TalonSRX(3);
@@ -45,7 +49,6 @@ public class DriveSubsystem extends SubsystemBase {
 
     private final DifferentialDrive drive;
 
-    private Pose2d currentPose;
     private final Field2d field = new Field2d();
 
     private final CommandXboxController xboxController;
@@ -58,8 +61,6 @@ public class DriveSubsystem extends SubsystemBase {
 
     public DriveSubsystem(CommandXboxController controller) {
         SmartDashboard.putData("Field", field);
-        navX.zeroYaw();
-        currentPose = new Pose2d(0, 0, new Rotation2d(0));
         this.rightFrontDriveMotor.setInverted(true);
         this.backRightDriveMotor.setInverted(true);
 
@@ -73,28 +74,31 @@ public class DriveSubsystem extends SubsystemBase {
 
         this.drive = new DifferentialDrive(leftFrontDriveMotor, rightFrontDriveMotor);
         this.xboxController = controller;
-        Rotation2d rotation = new Rotation2d(Math.toRadians(-90 + navX.getFusedHeading()));
+        Rotation2d rotation = new Rotation2d(Math.toRadians(navX.getFusedHeading()));
 
         odometry = new DifferentialDriveOdometry(rotation, 0, 0);
         leftEncoder.setDistancePerPulse(ENCODER_DISTANCE_PER_PULSE);
         rightEncoder.setDistancePerPulse(ENCODER_DISTANCE_PER_PULSE);
 
         leftEncoder.reset();
-        rightEncoder.reset();
+        rightEncoder.reset();    
     }
-    private double nativeUnitsToDistanceMeters(double sensorCounts){
-        double motorRotations = (double)sensorCounts / kCountsPerRev;
+
+    private double nativeUnitsToDistanceMeters(double sensorCounts) {
+        double motorRotations = (double) sensorCounts / kCountsPerRev;
         double wheelRotations = motorRotations / kSensorGearRatio;
         double positionMeters = wheelRotations * (2 * Math.PI * Units.inchesToMeters(kWheelRadiusInches));
         return positionMeters;
-      }
+    }
+
     @Override
     public void periodic() {
-        Rotation2d rotation = new Rotation2d(Math.toRadians(-90 + navX.getFusedHeading()));
-        SmartDashboard.putNumber("Left Encoder Distance", leftEncoder.getDistance());
-        SmartDashboard.putNumber("Right Encoder Distance", rightEncoder.getDistance());
-        odometry.update(rotation, nativeUnitsToDistanceMeters(leftFrontDriveMotor.getSelectedSensorPosition()), nativeUnitsToDistanceMeters(rightFrontDriveMotor.getSelectedSensorPosition()));
-        field.setRobotPose(odometry.getPoseMeters());
+        Rotation2d rotation = new Rotation2d(-Math.toRadians(navX.getFusedHeading()));
+        SmartDashboard.putNumber("Left Encoder Distance", leftFrontDriveMotor.getSelectedSensorPosition());
+        SmartDashboard.putNumber("Right Encoder Distance", rightFrontDriveMotor.getSelectedSensorPosition());
+        odometry.update(rotation, nativeUnitsToDistanceMeters(-leftFrontDriveMotor.getSelectedSensorPosition()),
+                nativeUnitsToDistanceMeters(-rightFrontDriveMotor.getSelectedSensorPosition()));
+        field.setRobotPose(new Pose2d(0, 0, rotation));
         // grab controller X and Y vales
         // pass to DifferentialDrive arcadedrive (x foward, y rotate)
         double xSpeed = -xboxController.getLeftY();
@@ -102,6 +106,7 @@ public class DriveSubsystem extends SubsystemBase {
 
         drive.arcadeDrive(MathUtil.clamp(xSpeed, -0.7, 0.7), MathUtil.clamp(zRotation, -0.7, 0.7));
     }
+
     public Pose2d getPose() {
         return odometry.getPoseMeters();
     }
@@ -109,19 +114,22 @@ public class DriveSubsystem extends SubsystemBase {
     public DifferentialDriveWheelSpeeds getWheelSpeeds() {
         return new DifferentialDriveWheelSpeeds(leftEncoder.getRate(), rightEncoder.getRate());
     }
-    public void drive(double xSpeed, double zSpeed){
+
+    public void drive(double xSpeed, double zSpeed) {
         drive.arcadeDrive(xSpeed, zSpeed);
     }
-    public void driveVolts(double leftVolts, double rightVolts){
+
+    public void driveVolts(double leftVolts, double rightVolts) {
         leftFrontDriveMotor.setVoltage(leftVolts);
         rightFrontDriveMotor.setVoltage(rightVolts);
         drive.feed();
     }
+
     public Command getAutoCommand(PathPlannerTrajectory traj, boolean isFirstPath) {
         return new SequentialCommandGroup(
                 new InstantCommand(() -> {
                     // Reset odometry for the first path you run during auto
-                    if(isFirstPath){
+                    if (isFirstPath) {
                         odometry.resetPosition(navX.getRotation2d(), 0, 0, traj.getInitialPose());
                     }
                 }),
@@ -135,9 +143,9 @@ public class DriveSubsystem extends SubsystemBase {
                         new PIDController(0, 0, 0), // Left controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
                         new PIDController(0, 0, 0), // Right controller (usually the same values as left controller)
                         this::driveVolts, // Voltage biconsumer
-                        true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
+                        true, // Should the path be automatically mirrored depending on alliance color.
+                              // Optional, defaults to true
                         this // Requires this drive subsystem
-                )
-        ).andThen(drive::stopMotor, this).handleInterrupt(drive::stopMotor);
+                )).andThen(drive::stopMotor, this).handleInterrupt(drive::stopMotor);
     }
 }
