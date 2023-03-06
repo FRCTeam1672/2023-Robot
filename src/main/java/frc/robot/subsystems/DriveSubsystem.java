@@ -104,6 +104,9 @@ public class DriveSubsystem extends SubsystemBase {
         double xSpeed = -xboxController.getLeftY();
         double zRotation = -xboxController.getRightX();
 
+        SmartDashboard.putNumber("XSpeed Controller", xSpeed);
+        SmartDashboard.putNumber("ZSpeed Controller", zRotation);
+
         drive.arcadeDrive(MathUtil.clamp(xSpeed, -0.7, 0.7), MathUtil.clamp(zRotation, -0.7, 0.7));
     }
 

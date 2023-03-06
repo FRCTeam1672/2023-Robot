@@ -41,4 +41,17 @@ public final class Constants {
     public static final double ramseteB = 2;
     public static final double ramseteZeta = 0.7;
   }
+  public static class PIDConstants {
+    public static final double kp = 0.024;
+    public static final double ki = 0.096;
+    public static final double kd = 0.0025;
+
+    public static final double Xkp = 0.3;
+    public static final double Xki = 0.0;
+    public static final double Xkd = 0.0;
+
+    public static final double Rkp = 0.32;
+    public static final double Rki = 0.41764;
+    public static final double Rkd = 0.612;
+  }
 }
