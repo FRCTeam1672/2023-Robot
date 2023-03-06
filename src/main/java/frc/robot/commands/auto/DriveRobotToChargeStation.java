@@ -26,18 +26,18 @@ public class DriveRobotToChargeStation extends CommandBase {
     }
     @Override
     public void execute() {
-        System.out.println("Drive Up");
         System.out.println("is on charge station: " + isOnChargeStation );
         SmartDashboard.putBoolean("Driving Up", true);
-        if(gryo.getRoll() <= -10){
+        SmartDashboard.putBoolean("Driving Up Var", isDrivingUp);
+        if(gryo.getPitch() >= 20){
             isDrivingUp = true;
-            drive.drive(0.85, 0);
+            drive.drive(0.70, 0);
         }
-        if(-8 <= gryo.getRoll() && gryo.getRoll() <= 8 ){
+        if(-8 <= gryo.getPitch() && gryo.getPitch() <= 8 ){
             isDrivingUp = false;
-            drive.drive(0.85, 0);
+            drive.drive(0.70, 0);
         }
-        else if(-55 <= gryo.getRoll() && gryo.getRoll() <= 20 ){
+        else if(-55 <= gryo.getPitch() && gryo.getPitch() <= 20 ){
             isOnChargeStation = true;
         }
     }

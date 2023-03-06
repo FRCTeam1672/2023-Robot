@@ -26,10 +26,12 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.RobotContainer;
 import frc.robot.TalonEncoder;
 
 public class DriveSubsystem extends SubsystemBase {
@@ -58,8 +60,10 @@ public class DriveSubsystem extends SubsystemBase {
 
     private final TalonEncoder rightEncoder = new TalonEncoder(rightFrontDriveMotor);
     private final TalonEncoder leftEncoder = new TalonEncoder(leftFrontDriveMotor);
+    private RobotContainer robotContainer;
 
-    public DriveSubsystem(CommandXboxController controller) {
+    public DriveSubsystem(CommandXboxController controller, RobotContainer robotContainer) {
+        this.robotContainer = robotContainer;
         SmartDashboard.putData("Field", field);
         this.rightFrontDriveMotor.setInverted(true);
         this.backRightDriveMotor.setInverted(true);
@@ -106,8 +110,8 @@ public class DriveSubsystem extends SubsystemBase {
 
         SmartDashboard.putNumber("XSpeed Controller", xSpeed);
         SmartDashboard.putNumber("ZSpeed Controller", zRotation);
-
-        drive.arcadeDrive(MathUtil.clamp(xSpeed, -0.7, 0.7), MathUtil.clamp(zRotation, -0.7, 0.7));
+        if(robotContainer.isInAuto()) return;
+        drive.arcadeDrive(MathUtil.clamp(xSpeed, -0.8, 0.8), MathUtil.clamp(zRotation, -0.7, 0.7));
     }
 
     public Pose2d getPose() {
@@ -129,26 +133,27 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public Command getAutoCommand(PathPlannerTrajectory traj, boolean isFirstPath) {
-        return new SequentialCommandGroup(
-                new InstantCommand(() -> {
-                    // Reset odometry for the first path you run during auto
-                    if (isFirstPath) {
-                        odometry.resetPosition(navX.getRotation2d(), 0, 0, traj.getInitialPose());
-                    }
-                }),
-                new PPRamseteCommand(
-                        traj,
-                        this::getPose, // Pose supplier
-                        new RamseteController(),
-                        new SimpleMotorFeedforward(Ks, Kv, Ka),
-                        DRIVE_KINEMATICS, // DifferentialDriveKinematics
-                        this::getWheelSpeeds, // DifferentialDriveWheelSpeeds supplier
-                        new PIDController(0, 0, 0), // Left controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-                        new PIDController(0, 0, 0), // Right controller (usually the same values as left controller)
-                        this::driveVolts, // Voltage biconsumer
-                        true, // Should the path be automatically mirrored depending on alliance color.
-                              // Optional, defaults to true
-                        this // Requires this drive subsystem
-                )).andThen(drive::stopMotor, this).handleInterrupt(drive::stopMotor);
+        // return new SequentialCommandGroup(
+        //         new InstantCommand(() -> {
+        //             // Reset odometry for the first path you run during auto
+        //             if (isFirstPath) {
+        //                 odometry.resetPosition(navX.getRotation2d(), 0, 0, traj.getInitialPose());
+        //             }
+        //         }),
+        //         new PPRamseteCommand(
+        //                 traj,
+        //                 this::getPose, // Pose supplier
+        //                 new RamseteController(),
+        //                 new SimpleMotorFeedforward(Ks, Kv, Ka),
+        //                 DRIVE_KINEMATICS, // DifferentialDriveKinematics
+        //                 this::getWheelSpeeds, // DifferentialDriveWheelSpeeds supplier
+        //                 new PIDController(0, 0, 0), // Left controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+        //                 new PIDController(0, 0, 0), // Right controller (usually the same values as left controller)
+        //                 this::driveVolts, // Voltage biconsumer
+        //                 true, // Should the path be automatically mirrored depending on alliance color.
+        //                       // Optional, defaults to true
+        //                 this // Requires this drive subsystem
+        //         )).andThen(drive::stopMotor, this).handleInterrupt(drive::stopMotor);
+        return Commands.none();
     }
 }

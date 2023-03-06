@@ -19,9 +19,8 @@ public class GyroSubsystem extends SubsystemBase {
     }
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Other Gryo", gryo.getAngle());
-        SmartDashboard.putNumber("Gyro Roll",ahrs.getRoll());
-        SmartDashboard.putNumber("Roll Value", GyroUtils.getRoll(ahrs.getRoll()));
+        SmartDashboard.putNumber("Gyro Roll",ahrs.getPitch());
+        SmartDashboard.putNumber("Roll Value", GyroUtils.getRoll(ahrs.getPitch()));
     }
 
     public AHRS getAHRS() {

@@ -5,6 +5,8 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.auto.BalanceRobot;
+import frc.robot.commands.auto.DriveRobotToChargeStation;
 import frc.robot.commands.elevator.ExtendElevatorCommand;
 import frc.robot.commands.elevator.MoveElevatorDownCommand;
 import frc.robot.commands.elevator.MoveElevatorUpCommand;
@@ -13,7 +15,10 @@ import frc.robot.commands.elevator.intake.IntakeCommand;
 import frc.robot.commands.elevator.intake.OuttakeCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.GyroSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LEDLightSubsystem;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
@@ -33,13 +38,22 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   CommandXboxController xboxController = new CommandXboxController(0);
-  private final DriveSubsystem driveSubsystem = new DriveSubsystem(xboxController);
+  private final LEDLightSubsystem ledLightSubsystem = new LEDLightSubsystem();
+  private final DriveSubsystem driveSubsystem = new DriveSubsystem(xboxController, this);
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   private final PowerDistribution powerDistribution = new PowerDistribution(1, ModuleType.kCTRE);
-
+  private final GyroSubsystem gyroSubsystem = new GyroSubsystem();
+  private boolean isInAuto = false;
+  public void setInAuto(boolean isInAuto) {
+    this.isInAuto = isInAuto;
+  }
   public RobotContainer(){
     bindBindings();
+    initCamera();
+  }
+  private void initCamera(){
+    CameraServer.startAutomaticCapture();
   }
   public void updatePDPVolt() {
     SmartDashboard.putNumber("Greggy Voltage", powerDistribution.getCurrent(7));
@@ -51,12 +65,21 @@ public class RobotContainer {
     xboxController.rightTrigger().whileTrue(new IntakeCommand(intakeSubsystem));
     xboxController.leftTrigger().whileTrue(new OuttakeCommand(intakeSubsystem));
 
-
     xboxController.a().whileTrue(new ExtendElevatorCommand(elevatorSubsystem));
     xboxController.b().whileTrue(new RetractElevatorCommand(elevatorSubsystem));
+    xboxController.x().whileTrue(
+      Commands.runOnce(() -> {
+        setInAuto(true);
+      }).andThen(new DriveRobotToChargeStation(driveSubsystem, gyroSubsystem).andThen(new BalanceRobot(gyroSubsystem, driveSubsystem)).handleInterrupt(() -> {
+        setInAuto(false);
+      }))
+    );
+  }
+  public boolean isInAuto(){
+    return isInAuto;
   }
 
-    public DriveSubsystem getDriveSubsystem() {
+  public DriveSubsystem getDriveSubsystem() {
       return this.driveSubsystem;
-    }
+  }
 }

@@ -23,20 +23,22 @@ public class BalanceRobot extends CommandBase {
 
     @Override
     public void execute() {
-        System.out.println("balanceing");
-        SmartDashboard.putBoolean("Balanceing", true);
+        SmartDashboard.putBoolean("Balancing", true);
         AHRS ahrs = this.gyroSubsystem.getAHRS();
-        double xSpeed = -GyroUtils.getRoll(ahrs.getRoll());
+        double xSpeed = GyroUtils.getRoll(ahrs.getPitch());
         if(xSpeed == 0.0){
+            SmartDashboard.putBoolean("Balancing Zero", true);
             finished++;
         }
         else{
             finished = 0;
+            SmartDashboard.putBoolean("Balancing Zero", false);
         }
         this.driveSubsystem.drive(xSpeed, 0.0);
     }
     @Override
     public void end(boolean interrupted) {
-        SmartDashboard.putBoolean("Balanceing", false);
+        SmartDashboard.putBoolean("Balancing", false);
+        SmartDashboard.putBoolean("Balancing Zero", false);
     }
 }
