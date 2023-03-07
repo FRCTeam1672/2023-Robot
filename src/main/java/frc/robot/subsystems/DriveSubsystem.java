@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.elevator.MoveElevatorUpCommand;
@@ -42,6 +43,9 @@ public class DriveSubsystem extends SubsystemBase {
         //pass to DifferentialDrive arcadedrive (x foward, y rotate)
         double xSpeed = -xboxController.getLeftY();
         double zRotation = -xboxController.getRightX(); 
+        SmartDashboard.putNumber("XSpeed Controller: ", xSpeed);
         drive.arcadeDrive(MathUtil.clamp(xSpeed, -0.7, 0.7), MathUtil.clamp(zRotation, -0.7, 0.7));
+        SmartDashboard.putNumber("Right Drive Velocity: ", rightFrontDriveMotor.getSelectedSensorVelocity());
+        SmartDashboard.putNumber("Left Drive Velocity: ", leftFrontDriveMotor.getSelectedSensorVelocity());
    }
 }

@@ -20,7 +20,7 @@ public final class Constants {
     public static final TunableNumber HIGH_EXTENSION = new TunableNumber("High Extension", 6);
     public static final TunableNumber SHELF_EXTENSION = new TunableNumber("Shelf Extension", 6);
 
-    public static final TunableNumber INTAKE_CUBE_CAP = new TunableNumber("Intake Current Cap", 74);
-    public static final TunableNumber INTAKE_CONE_CAP = new TunableNumber("Intake Current Cap", 60);
+    public static final TunableNumber INTAKE_CUBE_CAP = new TunableNumber("Intake Cube Cap", 74);
+    public static final TunableNumber INTAKE_CONE_CAP = new TunableNumber("Intake Cone Cap", 60);
   }
 }

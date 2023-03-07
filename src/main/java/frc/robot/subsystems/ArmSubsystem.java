@@ -30,12 +30,15 @@ public class ArmSubsystem extends SubsystemBase {
     private final DigitalInput bottomElevatorLimitSwitch = new DigitalInput(9);
     private final DigitalInput winchAngleLimitSwitch = new DigitalInput(8);
 
-    private final Targeter targeter;
+    private Targeter targeter;
+    private double currentCap;
+    private Runnable endCommand;
 
     public ArmSubsystem(Targeter targeter) {
         this.targeter = targeter;
         rIntake.follow(lIntake);
         lElevator.follow(rElevator, true);
+        intakeSet();
 
         SmartDashboard.putData("Home", Commands.runOnce(() -> {
             if (calibrating) winch.getEncoder().setPosition(0);
@@ -111,6 +114,8 @@ public class ArmSubsystem extends SubsystemBase {
 
         SmartDashboard.putNumber("Intake Current", this.lIntake.getOutputCurrent()+this.rIntake.getOutputCurrent());
 
+        SmartDashboard.putString("CUBE MODE", targeter.getTargetNode().toString());
+
         if(!bottomElevatorLimitSwitch.get()) {
             lElevator.getEncoder().setPosition(0);
             rElevator.getEncoder().setPosition(0);
@@ -151,11 +156,16 @@ public class ArmSubsystem extends SubsystemBase {
         ).until(this::isStowed);
     }
 
-    public Command getIntakeCommand() {
-        double currentCap = targeter.getTargetNode().getTranslation() == Translation.CENTER ? INTAKE_CUBE_CAP.get() : INTAKE_CONE_CAP.get();
-        Runnable endCommand = targeter.getTargetNode().getTranslation() == Translation.CENTER ? () -> this.lIntake.set(-0.2) : this::stopIntake;
+    private void intakeSet() {
+        currentCap = targeter.getTargetNode().getTranslation() == Translation.CENTER ? INTAKE_CUBE_CAP.get() : INTAKE_CONE_CAP.get();
+        endCommand = targeter.getTargetNode().getTranslation() == Translation.CENTER ? () -> this.lIntake.set(-0.2) : this::stopIntake;
+    }
 
-        return Commands.run(this::intake)
+    public Command getIntakeCommand() {
+        //SmartDashboard.putString("CUBE MODE", targeter.getTargetNode().toString());
+        
+        return Commands.runOnce(this::intakeSet)
+            .andThen(this::intake)
             .until(() -> this.lIntake.getOutputCurrent()+this.rIntake.getOutputCurrent() > currentCap)
             .andThen(endCommand);
     }

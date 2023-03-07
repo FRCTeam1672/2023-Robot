@@ -10,6 +10,10 @@ public class Targeter {
     private Node targetNode;
     private Grid targetGrid;
 
+    public Targeter() {
+        setTarget(Grid.COOP, Nodes.HIGH_RIGHT);
+    }
+
     public void setTarget(Grid grid, Node node) {
         if(grid != null) targetGrid = grid;
         if(node != null) targetNode = node;

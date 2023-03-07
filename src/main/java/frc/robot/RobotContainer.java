@@ -44,7 +44,6 @@ public class RobotContainer {
   private final PowerDistribution powerDistribution = new PowerDistribution(1, ModuleType.kCTRE);
 
   public RobotContainer(){
-    targeter.setTarget(Grid.COOP, HIGH_CENTER);
     bindBindings();
     CameraServer.startAutomaticCapture();
   }
@@ -52,7 +51,8 @@ public class RobotContainer {
     driveController.rightBumper().whileTrue(new MoveElevatorUpCommand(armSubsystem));
     driveController.leftBumper().whileTrue(new MoveElevatorDownCommand(armSubsystem));
 
-    driveController.rightTrigger().onTrue(armSubsystem.getIntakeCommand());
+    //driveController.rightTrigger().onTrue(armSubsystem.getIntakeCommand());
+    driveController.rightTrigger().whileTrue(new IntakeCommand(armSubsystem));
     driveController.leftTrigger().whileTrue(new OuttakeCommand(armSubsystem));
 
     driveController.a().whileTrue(new ExtendElevatorCommand(armSubsystem));
