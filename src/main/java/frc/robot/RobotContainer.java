@@ -14,7 +14,9 @@ import frc.robot.commands.elevator.RetractElevatorCommand;
 import frc.robot.commands.elevator.intake.IntakeCommand;
 import frc.robot.commands.elevator.intake.OuttakeCommand;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.LEDLightSubsystem;
 import frc.robot.subsystems.ArmSubsystem;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
@@ -34,28 +36,29 @@ public class RobotContainer {
   private final CommandXboxController driveController = new CommandXboxController(0);
   private final CommandXboxController operatorController = new CommandXboxController(1);
 
-  private final DriveSubsystem driveSubsystem = new DriveSubsystem(driveController);
-  private final ArmSubsystem armSubsystem = new ArmSubsystem();
-  private final PowerDistribution powerDistribution = new PowerDistribution(1, ModuleType.kCTRE);
-
-  private final ADXRS450_Gyro gyro = new ADXRS450_Gyro();
-
+  private final LEDLightSubsystem ledLightSubsystem = new LEDLightSubsystem();
   private final Targeter targeter = new Targeter();
 
+  private final DriveSubsystem driveSubsystem = new DriveSubsystem(driveController);
+  private final ArmSubsystem armSubsystem = new ArmSubsystem(targeter);
+  private final PowerDistribution powerDistribution = new PowerDistribution(1, ModuleType.kCTRE);
+
   public RobotContainer(){
+    targeter.setTarget(Grid.COOP, HIGH_CENTER);
     bindBindings();
+    CameraServer.startAutomaticCapture();
   }
   private void bindBindings(){
     driveController.rightBumper().whileTrue(new MoveElevatorUpCommand(armSubsystem));
     driveController.leftBumper().whileTrue(new MoveElevatorDownCommand(armSubsystem));
 
-    driveController.rightTrigger().whileTrue(new IntakeCommand(armSubsystem));
+    driveController.rightTrigger().onTrue(armSubsystem.getIntakeCommand());
     driveController.leftTrigger().whileTrue(new OuttakeCommand(armSubsystem));
 
     driveController.a().whileTrue(new ExtendElevatorCommand(armSubsystem));
     driveController.b().whileTrue(new RetractElevatorCommand(armSubsystem));
 
-    driveController.y().whileTrue(Commands.run(() -> SmartDashboard.putNumber("Elevator angle", gyro.getAngle())));
+    driveController.povLeft().onTrue(armSubsystem.getScoreCommand(Node.Height.MID));
 
     operatorController.start().onTrue(targeter.target(null, HYBRID_LEFT));
     operatorController.back().onTrue(targeter.target(null, HYBRID_CENTER));

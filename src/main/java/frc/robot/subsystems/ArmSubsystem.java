@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -10,6 +11,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Node;
+import frc.robot.Targeter;
+import frc.robot.Node.Translation;
 import frc.robot.commands.elevator.TimerCommand;
 
 import static frc.robot.Constants.Elevator.*;
@@ -27,7 +30,10 @@ public class ArmSubsystem extends SubsystemBase {
     private final DigitalInput bottomElevatorLimitSwitch = new DigitalInput(9);
     private final DigitalInput winchAngleLimitSwitch = new DigitalInput(8);
 
-    public ArmSubsystem() {
+    private final Targeter targeter;
+
+    public ArmSubsystem(Targeter targeter) {
+        this.targeter = targeter;
         rIntake.follow(lIntake);
         lElevator.follow(rElevator, true);
 
@@ -39,15 +45,19 @@ public class ArmSubsystem extends SubsystemBase {
 
     /** Increase elevator angle. */
     public void moveUp() {
-        if (winch.getEncoder().getPosition() >= -3 && !calibrating) {
+        if (!winchAngleLimitSwitch.get()) {
             stopWinch();
         } else {
-            winch.set(0.75);
+            winch.set(1);
         }
     }
     /** Decrease elevator angle. */
     public void moveDown() {
-        winch.set(-0.5);
+        if(winch.getEncoder().getPosition() <= -222){
+            stopWinch();
+            return;
+        } 
+        winch.set(-1);
     }
 
     /** Increase elevator extension. */
@@ -72,7 +82,8 @@ public class ArmSubsystem extends SubsystemBase {
         lIntake.set(-0.7);
     }
     public void outtake() {
-        lIntake.set(1);
+        double speed = targeter.getTargetNode().getTranslation() == Translation.CENTER ? 0.5 : 1.0;
+        lIntake.set(speed);
     }
 
     public void stopWinch() {
@@ -97,46 +108,62 @@ public class ArmSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("RElevator Encoder: ", rElevator.getEncoder().getPosition());
         SmartDashboard.putNumber("Winch Elevator Encoder: ", winch.getEncoder().getPosition());
         SmartDashboard.putBoolean("Calibrating", calibrating);
+
+        SmartDashboard.putNumber("Intake Current", this.lIntake.getOutputCurrent()+this.rIntake.getOutputCurrent());
+
+        if(!bottomElevatorLimitSwitch.get()) {
+            lElevator.getEncoder().setPosition(0);
+            rElevator.getEncoder().setPosition(0);
+        }
+        if (!winchAngleLimitSwitch.get()) {
+            winch.getEncoder().setPosition(0);
+        }
     }
 
     public Command setAngle(double encoderPosition) {
-        double ERROR = 0.1;
+        double ERROR = 4;
 
         return Commands.run(() -> {
             double errorDirection = Math.signum(encoderPosition - winch.getEncoder().getPosition());
             double errorProximity = encoderPosition - winch.getEncoder().getPosition() < 2*ERROR ? 0.5 : 1;
-            double elevatorSpeed =  errorDirection * errorProximity * 0.55;
+            double winchSpeed =  errorDirection * errorProximity * 0.8;
 
-            winch.set(elevatorSpeed);
-        }).until(() -> Math.abs(lElevator.getEncoder().getPosition() - encoderPosition) < ERROR);
+            winch.set(MathUtil.clamp(winchSpeed, -0.85, 0.85));
+        }).until(() -> Math.abs(winch.getEncoder().getPosition() - encoderPosition) < ERROR)
+        .andThen(this::stopWinch);
     }
     public Command setExtension(double encoderPosition) {
-        double ERROR = 0.1;
+        double ERROR = 2;
 
         return Commands.run(() -> {
-            double errorDirection = Math.signum(encoderPosition - lElevator.getEncoder().getPosition());
-            double errorProximity = encoderPosition - lElevator.getEncoder().getPosition() < 2*ERROR ? 0.5 : 1;
-            double elevatorSpeed =  errorDirection * errorProximity * 0.2;
+            double errorDirection = Math.signum(encoderPosition - rElevator.getEncoder().getPosition());
+            double errorProximity = encoderPosition - rElevator.getEncoder().getPosition() < 2*ERROR ? 0.5 : 1;
+            double elevatorSpeed =  errorDirection * 0.3;
 
-            lElevator.set(elevatorSpeed);
-        }).until(() -> Math.abs(lElevator.getEncoder().getPosition() - encoderPosition) < ERROR);
+            rElevator.set(MathUtil.clamp(elevatorSpeed, -0.3, 0.3));
+        }).until(() -> Math.abs(rElevator.getEncoder().getPosition() - encoderPosition) < ERROR)
+        .andThen(this::stopElevator);
     }
 
     private Command getStowCommand() {
         return Commands.parallel(
-            Commands.run(this::retract), Commands.run(this::moveUp)
+            Commands.run(this::retract), Commands.run(this::moveUp), Commands.runOnce(this::stopIntake)
         ).until(this::isStowed);
     }
 
-    private Command getIntakeCommand() {
-        return Commands.run(this::intake).until(() -> this.lIntake.getOutputCurrent()+this.rIntake.getOutputCurrent() > INTAKE_CURRENT_CAP.get());
+    public Command getIntakeCommand() {
+        double currentCap = targeter.getTargetNode().getTranslation() == Translation.CENTER ? INTAKE_CUBE_CAP.get() : INTAKE_CONE_CAP.get();
+
+        return Commands.run(this::intake)
+            .until(() -> this.lIntake.getOutputCurrent()+this.rIntake.getOutputCurrent() > currentCap)
+            .andThen(() -> this.lIntake.set(-0.2));
     }
 
     private Command getScoreHybridCommand() {
         return Commands.parallel(
             setAngle(HYBRID_ANGLE.get()),
             setExtension(HYBRID_EXTENSION.get())
-        ).andThen(new TimerCommand(this::outtake, 2))
+        ).andThen(new TimerCommand(this::outtake, 1))
         .finallyDo(e -> getStowCommand().schedule());
     }
 
@@ -144,7 +171,7 @@ public class ArmSubsystem extends SubsystemBase {
         return Commands.parallel(
             setAngle(MID_ANGLE.get()),
             setExtension(MID_EXTENSION.get())
-        ).andThen(new TimerCommand(this::outtake, 2))
+        ).andThen(new TimerCommand(this::outtake,1))
         .finallyDo(e -> getStowCommand().schedule());
     }
 
@@ -152,7 +179,7 @@ public class ArmSubsystem extends SubsystemBase {
         return Commands.parallel(
             setAngle(HIGH_ANGLE.get()),
             setExtension(HIGH_EXTENSION.get())
-        ).andThen(new TimerCommand(this::outtake, 2))
+        ).andThen(new TimerCommand(this::outtake, 1))
         .finallyDo(e -> getStowCommand().schedule());
     }
 

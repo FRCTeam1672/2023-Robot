@@ -1,0 +1,5 @@
+Middle Node: 
+L = 54
+W = -134
+
+idle: under 12 A (for margin)
