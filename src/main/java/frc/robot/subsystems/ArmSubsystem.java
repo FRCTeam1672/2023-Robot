@@ -153,10 +153,11 @@ public class ArmSubsystem extends SubsystemBase {
 
     public Command getIntakeCommand() {
         double currentCap = targeter.getTargetNode().getTranslation() == Translation.CENTER ? INTAKE_CUBE_CAP.get() : INTAKE_CONE_CAP.get();
+        Runnable endCommand = targeter.getTargetNode().getTranslation() == Translation.CENTER ? () -> this.lIntake.set(-0.2) : this::stopIntake;
 
         return Commands.run(this::intake)
             .until(() -> this.lIntake.getOutputCurrent()+this.rIntake.getOutputCurrent() > currentCap)
-            .andThen(() -> this.lIntake.set(-0.2));
+            .andThen(endCommand);
     }
 
     private Command getScoreHybridCommand() {
