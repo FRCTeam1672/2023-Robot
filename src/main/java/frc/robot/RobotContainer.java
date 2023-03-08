@@ -59,6 +59,7 @@ public class RobotContainer {
     driveController.b().whileTrue(new RetractElevatorCommand(armSubsystem));
 
     driveController.povLeft().onTrue(armSubsystem.getScoreCommand(Node.Height.MID));
+    driveController.povUp().onTrue(armSubsystem.getScoreCommand(Node.Height.HIGH));
 
     operatorController.start().onTrue(targeter.target(null, HYBRID_LEFT));
     operatorController.back().onTrue(targeter.target(null, HYBRID_CENTER));

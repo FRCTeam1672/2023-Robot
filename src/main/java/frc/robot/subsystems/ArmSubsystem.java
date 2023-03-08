@@ -65,6 +65,10 @@ public class ArmSubsystem extends SubsystemBase {
 
     /** Increase elevator extension. */
     public void extend() {
+        if(rElevator.getEncoder().getPosition() > 115){
+            stopElevator();
+            return;
+        }
         // extend it a couple of inches 😏
         rElevator.set(0.2);
     }
