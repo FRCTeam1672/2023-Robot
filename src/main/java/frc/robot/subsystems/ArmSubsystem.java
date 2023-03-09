@@ -163,7 +163,7 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public boolean isGamePieceStowed() {
-        return !(lElevator.getEncoder().getPosition() < GAME_PIECE_RETRACT.get()g || winchAngleLimitSwitch.get());
+        return !(lElevator.getEncoder().getPosition() < GAME_PIECE_RETRACT.get() || winchAngleLimitSwitch.get());
     }
 
     public void retractToGamePiece() {
