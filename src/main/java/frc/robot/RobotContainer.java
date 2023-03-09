@@ -55,6 +55,8 @@ public class RobotContainer {
 
         driveController.a().whileTrue(new ExtendElevatorCommand(armSubsystem));
         driveController.b().whileTrue(new RetractElevatorCommand(armSubsystem));
+        driveController.y().onTrue(armSubsystem.getGamePieceStowCommand());
+
 
         driveController.povLeft().onTrue(armSubsystem.getScoreCommand(Node.Height.MID));
         driveController.povUp().onTrue(armSubsystem.getScoreCommand(Node.Height.HIGH));
@@ -78,7 +80,7 @@ public class RobotContainer {
                 Commands.run(() -> ledLightSubsystem.setColor(YELLOW))
                         .handleInterrupt(() -> ledLightSubsystem.setColor(RAINBOW))
         );
-        operatorController.rightTrigger().whileTrue(
+        operatorController.leftTrigger().whileTrue(
                 Commands.run(() -> ledLightSubsystem.setColor(PURPLE))
                         .handleInterrupt(() -> ledLightSubsystem.setColor(RAINBOW))
         );

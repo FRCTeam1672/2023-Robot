@@ -86,7 +86,6 @@ public class LEDLightSubsystem extends SubsystemBase {
     public void idle() {
         Alliance alliance = DriverStation.getAlliance();
 
-        if(currentState == LedState.PURPLE || currentState == LedState.YELLOW) return;
 
         if(alliance == Alliance.Blue) {
             currentState = LedState.BLUEPULSE;
@@ -103,6 +102,7 @@ public class LEDLightSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         if(!DriverStation.isEnabled()) idle();
+        else if(currentState == LedState.PURPLE || currentState == LedState.YELLOW) {}
         else setColor(LedState.RAINBOW); 
         currentState.setBuffer.accept(addressableLEDBuffer, persistentLedState);
         addressableLED.setData(addressableLEDBuffer);
