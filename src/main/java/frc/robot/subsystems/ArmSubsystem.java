@@ -18,8 +18,6 @@ import frc.robot.commands.elevator.TimerCommand;
 import static frc.robot.Constants.Elevator.*;
 
 public class ArmSubsystem extends SubsystemBase {
-    private boolean calibrating = Constants.tuningMode;
-
     private final CANSparkMax rIntake = new CANSparkMax(21, MotorType.kBrushless);
     private final CANSparkMax lIntake = new CANSparkMax(22, MotorType.kBrushless);
 
@@ -39,11 +37,6 @@ public class ArmSubsystem extends SubsystemBase {
         rIntake.follow(lIntake);
         lElevator.follow(rElevator, true);
         intakeSet();
-
-        SmartDashboard.putData("Home", Commands.runOnce(() -> {
-            if (calibrating) winch.getEncoder().setPosition(0);
-            calibrating = !calibrating;
-        }, this).ignoringDisable(true));
     }
 
     /** Increase elevator angle. */
@@ -114,7 +107,6 @@ public class ArmSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("LElevator Encoder: ", lElevator.getEncoder().getPosition());
         SmartDashboard.putNumber("RElevator Encoder: ", rElevator.getEncoder().getPosition());
         SmartDashboard.putNumber("Winch Elevator Encoder: ", winch.getEncoder().getPosition());
-        SmartDashboard.putBoolean("Calibrating", calibrating);
 
         SmartDashboard.putNumber("Intake Current", this.lIntake.getOutputCurrent()+this.rIntake.getOutputCurrent());
 

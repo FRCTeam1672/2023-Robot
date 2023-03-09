@@ -43,9 +43,6 @@ public class DriveSubsystem extends SubsystemBase {
         //pass to DifferentialDrive arcadedrive (x foward, y rotate)
         double xSpeed = -xboxController.getLeftY();
         double zRotation = -xboxController.getRightX(); 
-        SmartDashboard.putNumber("XSpeed Controller: ", xSpeed);
         drive.arcadeDrive(MathUtil.clamp(xSpeed, -0.85, 0.85), MathUtil.clamp(zRotation, -0.87, 0.87));
-        SmartDashboard.putNumber("Right Drive Velocity: ", rightFrontDriveMotor.getSelectedSensorVelocity());
-        SmartDashboard.putNumber("Left Drive Velocity: ", leftFrontDriveMotor.getSelectedSensorVelocity());
    }
 }
