@@ -1,4 +1,4 @@
-    package frc.robot.subsystems;
+package frc.robot.subsystems;
 
 import static frc.robot.Constants.DriveCharacteristics.DRIVE_KINEMATICS;
 import static frc.robot.Constants.DriveCharacteristics.ENCODER_DISTANCE_PER_PULSE;
@@ -12,6 +12,8 @@ import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPRamseteCommand;
 
+import edu.wpi.first.hal.SimDouble;
+import edu.wpi.first.hal.simulation.SimDeviceDataJNI;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
@@ -21,8 +23,16 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
+import edu.wpi.first.wpilibj.simulation.EncoderSim;
+import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotGearing;
+import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotMotor;
+import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotWheelSize;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -59,7 +69,22 @@ public class DriveSubsystem extends SubsystemBase {
 
     private final TalonEncoder rightEncoder = new TalonEncoder(rightFrontDriveMotor);
     private final TalonEncoder leftEncoder = new TalonEncoder(leftFrontDriveMotor);
+
+    /* start simulation */
+    private final EncoderSim sim_leftEncoderSim = new EncoderSim(new Encoder(0, 1));
+    private final EncoderSim sim_rightEncoderSim = new EncoderSim(new Encoder(2, 3));
+    private final SimDouble sim_gyro = new SimDouble(
+            SimDeviceDataJNI.getSimValueHandle(SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]"), "Yaw"));
+
+    private final DifferentialDrivetrainSim sim_drive = DifferentialDrivetrainSim.createKitbotSim(
+            KitbotMotor.kDualCIMPerSide,
+            KitbotGearing.k8p45,
+            KitbotWheelSize.kSixInch,
+            null);
+
+    /* end simulation */
     private final RobotContainer robotContainer;
+
     public DriveSubsystem(CommandXboxController controller, RobotContainer robotContainer) {
         this.robotContainer = robotContainer;
         navX.calibrate();
@@ -83,7 +108,7 @@ public class DriveSubsystem extends SubsystemBase {
         rightEncoder.setDistancePerPulse(ENCODER_DISTANCE_PER_PULSE);
 
         leftEncoder.reset();
-        rightEncoder.reset();    
+        rightEncoder.reset();
     }
 
     private double nativeUnitsToDistanceMeters(double sensorCounts) {
@@ -98,16 +123,38 @@ public class DriveSubsystem extends SubsystemBase {
         Rotation2d rotation = new Rotation2d(-Math.toRadians(navX.getFusedHeading()));
         SmartDashboard.putNumber("Left Encoder Distance", leftFrontDriveMotor.getSelectedSensorPosition());
         SmartDashboard.putNumber("Right Encoder Distance", rightFrontDriveMotor.getSelectedSensorPosition());
-        odometry.update(rotation, nativeUnitsToDistanceMeters(-leftFrontDriveMotor.getSelectedSensorPosition()),
-                nativeUnitsToDistanceMeters(-rightFrontDriveMotor.getSelectedSensorPosition()));
-        field.setRobotPose(odometry.getPoseMeters());
+        /* start simulation */
+        field.setRobotPose(getPose());
+        /* end simulation */
+
         // grab controller X and Y vales
         // pass to DifferentialDrive arcadedrive (x foward, y rotate)
         double xSpeed = -xboxController.getLeftY();
-        double zRotation = -xboxController.getRightX();
+        double zRotation = xboxController.getRightX();
 
         drive.arcadeDrive(MathUtil.clamp(xSpeed, -0.83, 0.83), MathUtil.clamp(zRotation, -0.7, 0.7));
     }
+
+    /* Start simulation */
+    @Override
+    public void simulationPeriodic() {
+        sim_drive.setInputs(rightFrontDriveMotor.get() * RobotController.getInputVoltage(),
+                leftFrontDriveMotor.get() * RobotController.getInputVoltage());
+
+        // Advance the model by 20 ms. Note that if you are running this
+        // subsystem in a separate thread or have changed the nominal timestep
+        // of TimedRobot, this value needs to match it.
+        sim_drive.update(0.02);
+
+        // Update all of our sensors.
+        sim_leftEncoderSim.setDistance(sim_drive.getLeftPositionMeters());
+        sim_leftEncoderSim.setRate(sim_drive.getLeftVelocityMetersPerSecond());
+        sim_rightEncoderSim.setDistance(sim_drive.getRightPositionMeters());
+        sim_rightEncoderSim.setRate(sim_drive.getRightVelocityMetersPerSecond());
+        sim_gyro.set(-sim_drive.getHeading().getDegrees());
+        odometry.resetPosition(sim_drive.getHeading(), 0, 0, sim_drive.getPose());
+    }
+    /* End simulation */
 
     public Pose2d getPose() {
         return odometry.getPoseMeters();
@@ -144,7 +191,8 @@ public class DriveSubsystem extends SubsystemBase {
                         new SimpleMotorFeedforward(Ks, Kv, Ka),
                         DRIVE_KINEMATICS, // DifferentialDriveKinematics
                         this::getWheelSpeeds, // DifferentialDriveWheelSpeeds supplier
-                        new PIDController(0, 0, 0), // Left controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+                        new PIDController(0, 0, 0), // Left controller. Tune these values for your robot. Leaving them 0
+                                                    // will only use feedforwards.
                         new PIDController(0, 0, 0), // Right controller (usually the same values as left controller)
                         this::driveVolts, // Voltage biconsumer
                         true, // Should the path be automatically mirrored depending on alliance color.
@@ -152,11 +200,10 @@ public class DriveSubsystem extends SubsystemBase {
                         this // Requires this drive subsystem
                 ),
                 new InstantCommand(
-                    () -> {
-                        robotContainer.getLightSubsystem().setState(LedState.YELLOW);
-                    }
-                )
-                
+                        () -> {
+                            robotContainer.getLightSubsystem().setState(LedState.YELLOW);
+                        })
+
         );
     }
 }
