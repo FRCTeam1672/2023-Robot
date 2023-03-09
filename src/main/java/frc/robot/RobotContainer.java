@@ -38,7 +38,7 @@ public class RobotContainer {
 
     private final DriveSubsystem driveSubsystem = new DriveSubsystem(driveController);
     private final GyroSubsystem gyroSubsystem = new GyroSubsystem();
-    private final ArmSubsystem armSubsystem = new ArmSubsystem(targeter);
+    private final ArmSubsystem armSubsystem = new ArmSubsystem();
 
     public RobotContainer() {
         bindBindings();
@@ -49,7 +49,7 @@ public class RobotContainer {
         driveController.rightBumper().whileTrue(new MoveElevatorUpCommand(armSubsystem));
         driveController.leftBumper().whileTrue(new MoveElevatorDownCommand(armSubsystem));
 
-        //driveController.rightTrigger().onTrue(armSubsystem.getIntakeCommand());
+        // driveController.rightTrigger().onTrue(armSubsystem.getIntakeCommand());
         driveController.rightTrigger().whileTrue(new IntakeCommand(armSubsystem));
         driveController.leftTrigger().whileTrue(new OuttakeCommand(armSubsystem));
 
@@ -89,8 +89,7 @@ public class RobotContainer {
     public Command getAutoCommand() {
         return armSubsystem
                 .getStowCommand()
-                .andThen(armSubsystem.getScoreCommand(Node.Height.HIGH))
-                .andThen(new TimerCommand(() -> driveSubsystem.drive(-0.70, 0), 5))
+                .andThen(armSubsystem.getAutoScoreCommand())
                 .andThen(new DriveRobotToChargeStation(driveSubsystem, gyroSubsystem))
                 .andThen(new BalanceRobot(gyroSubsystem, driveSubsystem));
 

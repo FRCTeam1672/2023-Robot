@@ -2,16 +2,19 @@ package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class GyroUtils {
     private static PIDController rollController = new PIDController(Constants.PIDConstants.Rkp, Constants.PIDConstants.Rki, Constants.PIDConstants.Rkd);
      
     public static double getRoll(double robotRoll) {
-        if(robotRoll >= 10) return 0.65; 
-        if(Math.abs(robotRoll) <= 9){
+        if(robotRoll < -15) return -0.7; 
+        if(Math.abs(robotRoll) <= 8){
             System.out.println("robot roll too low!");
-            return 0.0;
+            SmartDashboard.putBoolean("Balanced", true);
+            return 0.05;
         } 
-        return -MathUtil.clamp(rollController.calculate(robotRoll), -0.50, 0.57);
+        SmartDashboard.putBoolean("Balanced", false);
+        return -MathUtil.clamp(rollController.calculate(robotRoll),     -0, 0.59);
     }
 }   

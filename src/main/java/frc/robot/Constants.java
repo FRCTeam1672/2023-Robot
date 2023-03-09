@@ -20,14 +20,14 @@ public final class Constants {
     public static final TunableNumber HIGH_EXTENSION = new TunableNumber("High Extension", 121);
     public static final TunableNumber SHELF_EXTENSION = new TunableNumber("Shelf Extension", 6);
 
-    public static final TunableNumber INTAKE_CUBE_CAP = new TunableNumber("Intake Cube Cap", 74);
-    public static final TunableNumber INTAKE_CONE_CAP = new TunableNumber("Intake Cone Cap", 60);
+    public static final TunableNumber INTAKE_CUBE_CAP = new TunableNumber("Intake Cube Cap", 60);
+    public static final TunableNumber INTAKE_CONE_CAP = new TunableNumber("Intake Cone Cap", 40);
 
     public static final TunableNumber GAME_PIECE_RETRACT = new TunableNumber("Game Piece Retract", 20);
   }
   public static final class PIDConstants {
-    public static final double Rkp = 0.12;
-    public static final double Rki = 0.11764;
-    public static final double Rkd = 0.112;
+    public static final double Rkp = 0.1;
+    public static final double Rki = 0.1;
+    public static final double Rkd = 0.1;
   }
 }
