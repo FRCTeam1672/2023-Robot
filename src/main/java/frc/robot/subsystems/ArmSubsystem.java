@@ -2,17 +2,15 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Node;
-import frc.robot.Targeter;
 import frc.robot.Node.Translation;
+import frc.robot.Targeter;
 import frc.robot.commands.elevator.TimerCommand;
 
 import static frc.robot.Constants.Elevator.*;
@@ -107,9 +105,7 @@ public class ArmSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("LElevator Encoder: ", lElevator.getEncoder().getPosition());
         SmartDashboard.putNumber("RElevator Encoder: ", rElevator.getEncoder().getPosition());
         SmartDashboard.putNumber("Winch Elevator Encoder: ", winch.getEncoder().getPosition());
-
         SmartDashboard.putNumber("Intake Current", this.lIntake.getOutputCurrent()+this.rIntake.getOutputCurrent());
-
         SmartDashboard.putString("CUBE MODE", targeter.getTargetNode().toString());
 
         if(!bottomElevatorLimitSwitch.get()) {
@@ -138,7 +134,6 @@ public class ArmSubsystem extends SubsystemBase {
 
         return Commands.run(() -> {
             double errorDirection = Math.signum(encoderPosition - rElevator.getEncoder().getPosition());
-            double errorProximity = encoderPosition - rElevator.getEncoder().getPosition() < 2*ERROR ? 0.5 : 1;
             double elevatorSpeed =  errorDirection * 0.3;
 
             rElevator.set(MathUtil.clamp(elevatorSpeed, -0.3, 0.3));
@@ -146,7 +141,7 @@ public class ArmSubsystem extends SubsystemBase {
         .andThen(this::stopElevator);
     }
 
-    private Command getStowCommand() {
+    public Command getStowCommand() {
         return Commands.parallel(
             Commands.run(this::retract), Commands.run(this::moveUp), Commands.runOnce(this::stopIntake)
         ).until(this::isStowed);
@@ -158,8 +153,6 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public Command getIntakeCommand() {
-        //SmartDashboard.putString("CUBE MODE", targeter.getTargetNode().toString());
-        
         return Commands.runOnce(this::intakeSet)
             .andThen(this::intake)
             .until(() -> this.lIntake.getOutputCurrent()+this.rIntake.getOutputCurrent() > currentCap)
@@ -167,10 +160,7 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     private Command getScoreHybridCommand() {
-        return Commands.parallel(
-            setAngle(HYBRID_ANGLE.get()),
-            setExtension(HYBRID_EXTENSION.get())
-        ).andThen(new TimerCommand(this::outtake, 1))
+        return new TimerCommand(this::outtake, 1)
         .finallyDo(e -> getStowCommand().schedule());
     }
 
@@ -203,15 +193,6 @@ public class ArmSubsystem extends SubsystemBase {
         return Commands.parallel(
             setAngle(SHELF_ANGLE.get()),
             setExtension(SHELF_EXTENSION.get()),
-            getIntakeCommand()
-        )
-        .finallyDo(e -> getStowCommand().schedule());
-    }
-
-    public Command getGroundIntakeCommand() {
-        return Commands.parallel(
-            setAngle(GROUND_ANGLE.get()),
-            setExtension(GROUND_EXTENSION.get()),
             getIntakeCommand()
         )
         .finallyDo(e -> getStowCommand().schedule());

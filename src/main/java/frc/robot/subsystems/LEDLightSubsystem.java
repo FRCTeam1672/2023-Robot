@@ -1,20 +1,20 @@
 package frc.robot.subsystems;
 
-import java.util.function.BiConsumer;
-
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import java.util.function.BiConsumer;
+
 public class LEDLightSubsystem extends SubsystemBase {
     private final AddressableLED addressableLED = new AddressableLED(7);
     private final AddressableLEDBuffer addressableLEDBuffer = new AddressableLEDBuffer(150);
     private LedState currentState = LedState.REDPULSE;
-    private PersistentLedState persistentLedState = new PersistentLedState();
+    private final PersistentLedState persistentLedState = new PersistentLedState();
 
-    private class PersistentLedState {
+    private static class PersistentLedState {
         public int rainbowFirstPixelHue = 0;
         public int pulseOffset = 0;
     }
@@ -83,12 +83,10 @@ public class LEDLightSubsystem extends SubsystemBase {
         addressableLED.start();
     }
 
-    public void setState(LedState state) {
-        currentState = state;
-    }
-
     public void idle() {
         Alliance alliance = DriverStation.getAlliance();
+
+        if(currentState == LedState.PURPLE || currentState == LedState.YELLOW) return;
 
         if(alliance == Alliance.Blue) {
             currentState = LedState.BLUEPULSE;
