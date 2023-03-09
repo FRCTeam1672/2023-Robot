@@ -22,6 +22,8 @@ public final class Constants {
 
     public static final TunableNumber INTAKE_CUBE_CAP = new TunableNumber("Intake Cube Cap", 74);
     public static final TunableNumber INTAKE_CONE_CAP = new TunableNumber("Intake Cone Cap", 60);
+
+    public static final TunableNumber GAME_PIECE_RETRACT = new TunableNumber("Game Piece Retract", 20);
   }
   public static final class PIDConstants {
     public static final double Rkp = 0.12;
