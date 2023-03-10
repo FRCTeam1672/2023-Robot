@@ -15,6 +15,6 @@ public class GyroUtils {
             return 0.05;
         } 
         SmartDashboard.putBoolean("Balanced", false);
-        return -MathUtil.clamp(rollController.calculate(robotRoll),     -0, 0.59);
+        return -MathUtil.clamp(rollController.calculate(robotRoll),     -0.52, 0.59);
     }
 }   

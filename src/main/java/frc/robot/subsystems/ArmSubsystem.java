@@ -62,12 +62,12 @@ public class ArmSubsystem extends SubsystemBase {
 
     /** Increase elevator extension. */
     public void extend() {
-        if (rElevator.getEncoder().getPosition() > 115) {
+        if (rElevator.getEncoder().getPosition() > 105) {
             stopElevator();
             return;
         }
         // extend it a couple of inches 😏
-        rElevator.set(0.2);
+        rElevator.set(0.4);
     }
 
     /** Decrease elevator extension. */
@@ -79,7 +79,7 @@ public class ArmSubsystem extends SubsystemBase {
             stopElevator();
         } else {
             // sheathe it, you heathen!
-            rElevator.set(-0.35);
+            rElevator.set(-0.4);
         }
     }
 
@@ -141,7 +141,7 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public Command setExtension(double encoderPosition) {
-        double ERROR = 2;
+        double ERROR = 15;
 
         return Commands.run(() -> {
             double errorDirection = Math.signum(encoderPosition - rElevator.getEncoder().getPosition());
@@ -154,7 +154,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     public Command getStowCommand() {
         return Commands.parallel(
-                Commands.run(this::retract), Commands.run(this::moveUp), Commands.runOnce(this::stopIntake))
+                Commands.run(this::retract), Commands.waitSeconds(1).andThen(this::moveUp), Commands.runOnce(this::stopIntake))
                 .until(this::isStowed);
     }
 
@@ -174,7 +174,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     public Command getGamePieceStowCommand() {
         return Commands.parallel(
-                Commands.run(this::retractToGamePiece), Commands.run(this::moveUp), Commands.runOnce(this::stopIntake))
+                Commands.run(this::retractToGamePiece), Commands.waitSeconds(1).andThen(this::moveUp), Commands.runOnce(this::stopIntake))
                 .until(this::isGamePieceStowed)
                 .finallyDo(e -> {this.stopWinch(); this.stopElevator();});
     }

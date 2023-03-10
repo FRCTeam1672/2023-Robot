@@ -58,7 +58,7 @@ public class RobotContainer {
         driveController.y().onTrue(armSubsystem.getGamePieceStowCommand());
 
 
-        driveController.povLeft().onTrue(armSubsystem.getScoreCommand(Node.Height.MID));
+        driveController.povDown().onTrue(armSubsystem.getScoreCommand(Node.Height.MID));
         driveController.povUp().onTrue(armSubsystem.getScoreCommand(Node.Height.HIGH));
 
         operatorController.start().onTrue(targeter.target(null, HYBRID_LEFT));
@@ -87,10 +87,11 @@ public class RobotContainer {
     }
 
     public Command getAutoCommand() {
-        return armSubsystem
-                .getStowCommand()
-                .andThen(armSubsystem.getAutoScoreCommand())
-                .andThen(new DriveRobotToChargeStation(driveSubsystem, gyroSubsystem))
+        return  //armSubsystem
+                //.getStowCommand()
+                //.andThen(armSubsystem.getAutoScoreCommand())
+                //.andThen(
+                new DriveRobotToChargeStation(driveSubsystem, gyroSubsystem)
                 .andThen(new BalanceRobot(gyroSubsystem, driveSubsystem));
 
     }
