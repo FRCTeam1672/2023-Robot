@@ -5,6 +5,8 @@
 package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -39,10 +41,18 @@ public class RobotContainer {
     private final DriveSubsystem driveSubsystem = new DriveSubsystem(driveController);
     private final GyroSubsystem gyroSubsystem = new GyroSubsystem();
     private final ArmSubsystem armSubsystem = new ArmSubsystem();
+    private final SendableChooser<Command> autos = new SendableChooser<>();
+
+    public SendableChooser<Command> getAutos() {
+        return autos;
+    }
 
     public RobotContainer() {
         bindBindings();
         CameraServer.startAutomaticCapture();
+        autos.setDefaultOption("Score and Mobility", getScoreMobilityAuto());
+        autos.addOption("Engage Charge Station", getAutoCommand());
+        SmartDashboard.putData("Auto Chooser", autos);
     }
 
     private void bindBindings() {

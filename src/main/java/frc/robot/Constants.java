@@ -26,8 +26,8 @@ public final class Constants {
     public static final TunableNumber GAME_PIECE_RETRACT = new TunableNumber("Game Piece Retract", 20);
   }
   public static final class PIDConstants {
-    public static final double Rkp = 0.1;
-    public static final double Rki = 0.1;
-    public static final double Rkd = 0.1;
+    public static final double Rkp = 0.12;
+    public static final double Rki = 0.11764;
+    public static final double Rkd = 0.112;
   }
 }

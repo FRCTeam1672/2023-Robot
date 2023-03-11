@@ -1,7 +1,5 @@
 package frc.robot.commands.auto;
 
-import javax.swing.text.StyleContext.SmallAttributeSet;
-
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -10,27 +8,38 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.GyroSubsystem;
 
 public class DriveRobotToChargeStation extends CommandBase {
-    private final DriveSubsystem drive;
-    private final AHRS gyro;
+    private DriveSubsystem drive;
+    private GyroSubsystem gryoSubsystem;
+    private final AHRS gryo;
+    private boolean isDrivingUp = false;
     private boolean isOnChargeStation = false;
 
-    public DriveRobotToChargeStation(DriveSubsystem drive, GyroSubsystem gyro){
+    public DriveRobotToChargeStation(DriveSubsystem drive, GyroSubsystem gryo){
         this.drive = drive;
-        this.gyro = gyro.getAHRS();
+        this.gryoSubsystem = gryo;
+        this.gryo = gryo.getAHRS();
     }
     @Override
     public void initialize() {
+        isDrivingUp = false;
         isOnChargeStation = false;
     }
     @Override
     public void execute() {
-        if(gyro.getPitch() > -10){
-            drive.drive(-0.785, 0);
+        System.out.println("is on charge station: " + isOnChargeStation );
+        SmartDashboard.putBoolean("Driving Up", true);
+        SmartDashboard.putBoolean("Driving Up Var", isDrivingUp);
+        if(gryo.getPitch() >= 20){
+            isDrivingUp = true;
+            drive.drive(0.70, 0);
         }
-        else if(gyro.getPitch() <= -10 ){
+        if(-8 <= gryo.getPitch() && gryo.getPitch() <= 8 ){
+            isDrivingUp = false;
+            drive.drive(0.70, 0);
+        }
+        else if(-55 <= gryo.getPitch() && gryo.getPitch() <= 20 ){
             isOnChargeStation = true;
         }
-        SmartDashboard.putBoolean("Driving up", true);
     }
     @Override
     public boolean isFinished() {
@@ -38,7 +47,7 @@ public class DriveRobotToChargeStation extends CommandBase {
     }
     @Override
     public void end(boolean interrupted) {
-        SmartDashboard.putBoolean("Driving up", false);
+        SmartDashboard.putBoolean("Driving Up", false);
     }
     
 }
