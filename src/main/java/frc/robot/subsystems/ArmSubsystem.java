@@ -215,7 +215,7 @@ public class ArmSubsystem extends SubsystemBase {
     public Command getAutoScoreCommand() {
         return Commands.parallel(
                 setAngle(HIGH_ANGLE.get()),
-                setExtension(HIGH_EXTENSION.get())).andThen(new TimerCommand(this::outtake, 1))
+                setExtension(HIGH_EXTENSION.get())).andThen(new TimerCommand(this::outtake, 0.5))
                 .andThen(getStowCommand());
     }
 

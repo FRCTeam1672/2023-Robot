@@ -25,7 +25,7 @@ public class DriveRobotToChargeStation extends CommandBase {
     @Override
     public void execute() {
         if(gyro.getPitch() > -10){
-            drive.drive(-0.74, 0);
+            drive.drive(-0.785, 0);
         }
         else if(gyro.getPitch() <= -10 ){
             isOnChargeStation = true;

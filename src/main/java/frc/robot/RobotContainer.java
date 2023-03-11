@@ -87,12 +87,18 @@ public class RobotContainer {
     }
 
     public Command getAutoCommand() {
-        return  //armSubsystem
-                //.getStowCommand()
-                //.andThen(armSubsystem.getAutoScoreCommand())
-                //.andThen(
-                new DriveRobotToChargeStation(driveSubsystem, gyroSubsystem)
+        return  armSubsystem
+                .getStowCommand()
+                .andThen(
+                    new DriveRobotToChargeStation(driveSubsystem, gyroSubsystem)
+                )
                 .andThen(new BalanceRobot(gyroSubsystem, driveSubsystem));
 
+    }
+    public Command getScoreMobilityAuto(){
+        return armSubsystem.getStowCommand()
+                .andThen(armSubsystem.getAutoScoreCommand())
+                .andThen(new TimerCommand(() -> driveSubsystem.drive(-0.75, 0), 2))
+                .andThen(() -> driveSubsystem.drive(0, 0));
     }
 }
