@@ -44,9 +44,11 @@ public class ArmSubsystem extends SubsystemBase {
 
     /** Increase elevator angle. */
     public void moveUp() {
-        if (!winchAngleLimitSwitch.get()) {
+        //if (!winchAngleLimitSwitch.get()) {
+        if(!winchAngleLimitSwitch.get()) {
             stopWinch();
-        } else {
+        } 
+        else {
             winch.set(1);
         }
     }
@@ -117,6 +119,8 @@ public class ArmSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Winch Elevator Encoder: ", winch.getEncoder().getPosition());
         SmartDashboard.putNumber("Intake Current", this.lIntake.getOutputCurrent() + this.rIntake.getOutputCurrent());
         
+        SmartDashboard.putBoolean("Elevator Limit Switch", !bottomElevatorLimitSwitch.get());
+        SmartDashboard.putBoolean("Winch Limit Switch", !winchAngleLimitSwitch.get());
 
         if (!bottomElevatorLimitSwitch.get()) {
             lElevator.getEncoder().setPosition(0);
@@ -128,7 +132,7 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public Command setAngle(double encoderPosition) {
-        double ERROR = 4;
+        double ERROR = 2;
 
         return Commands.run(() -> {
             double errorDirection = Math.signum(encoderPosition - winch.getEncoder().getPosition());
@@ -141,7 +145,7 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public Command setExtension(double encoderPosition) {
-        double ERROR = 15;
+        double ERROR = 8;
 
         return Commands.run(() -> {
             double errorDirection = Math.signum(encoderPosition - rElevator.getEncoder().getPosition());
@@ -236,7 +240,6 @@ public class ArmSubsystem extends SubsystemBase {
         return Commands.parallel(
                 setAngle(SHELF_ANGLE.get()),
                 setExtension(SHELF_EXTENSION.get())//,
-                )//getIntakeCommand())
-                .finallyDo(e -> getStowCommand().schedule());
+        );
     }
 }

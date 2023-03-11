@@ -9,12 +9,12 @@ public class GyroUtils {
      
     public static double getRoll(double robotRoll) {
         if(robotRoll < -15) return -0.7; 
-        if(Math.abs(robotRoll) <= 6){
+        if(Math.abs(robotRoll) <= 7){
             System.out.println("robot roll too low!");
             SmartDashboard.putBoolean("Balanced", true);
-            return 0.05;
+            return 0.00;
         } 
         SmartDashboard.putBoolean("Balanced", false);
-        return -MathUtil.clamp(rollController.calculate(robotRoll),     -0.52, 0.59);
+        return -MathUtil.clamp(rollController.calculate(robotRoll),     -0.50, 0.58);
     }
 }   

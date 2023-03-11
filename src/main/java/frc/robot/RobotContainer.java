@@ -5,9 +5,12 @@
 package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Node.Height;
 import frc.robot.Targeter.Grid;
 import frc.robot.commands.auto.BalanceRobot;
 import frc.robot.commands.auto.DriveRobotToChargeStation;
@@ -21,6 +24,8 @@ import frc.robot.subsystems.LEDLightSubsystem;
 
 import static frc.robot.Targeter.Nodes.*;
 import static frc.robot.subsystems.LEDLightSubsystem.LedState.*;
+
+import javax.swing.text.StyleContext.SmallAttributeSet;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -40,9 +45,18 @@ public class RobotContainer {
     private final GyroSubsystem gyroSubsystem = new GyroSubsystem();
     private final ArmSubsystem armSubsystem = new ArmSubsystem();
 
+    private final SendableChooser<Command> autos = new SendableChooser<>();
+
+    public SendableChooser<Command> getAutos() {
+        return autos;
+    }
+
     public RobotContainer() {
         bindBindings();
         CameraServer.startAutomaticCapture();
+        autos.setDefaultOption("Mobility", getScoreMobilityAuto());
+        autos.addOption("Engage Charge Station", getChargeStationAuto());
+        SmartDashboard.putData("Select Auto", autos);
     }
 
     private void bindBindings() {
@@ -60,6 +74,7 @@ public class RobotContainer {
 
         driveController.povDown().onTrue(armSubsystem.getScoreCommand(Node.Height.MID));
         driveController.povUp().onTrue(armSubsystem.getScoreCommand(Node.Height.HIGH));
+        driveController.povRight().onTrue(armSubsystem.getShelfIntakeCommand());
 
         operatorController.start().onTrue(targeter.target(null, HYBRID_LEFT));
         operatorController.back().onTrue(targeter.target(null, HYBRID_CENTER));
@@ -86,8 +101,8 @@ public class RobotContainer {
         );
     }
 
-    public Command getAutoCommand() {
-        return  armSubsystem
+    public Command getChargeStationAuto() {
+        return armSubsystem
                 .getStowCommand()
                 .andThen(
                     new DriveRobotToChargeStation(driveSubsystem, gyroSubsystem)
@@ -97,8 +112,8 @@ public class RobotContainer {
     }
     public Command getScoreMobilityAuto(){
         return armSubsystem.getStowCommand()
-                .andThen(armSubsystem.getAutoScoreCommand())
-                .andThen(new TimerCommand(() -> driveSubsystem.drive(-0.75, 0), 2))
+                .andThen(armSubsystem.getScoreCommand(Height.HIGH))
+                .andThen(new TimerCommand(() -> driveSubsystem.drive(-0.61, 0), 3.5))
                 .andThen(() -> driveSubsystem.drive(0, 0));
     }
 }
