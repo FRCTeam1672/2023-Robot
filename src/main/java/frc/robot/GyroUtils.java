@@ -8,7 +8,7 @@ public class GyroUtils {
     private static PIDController rollController = new PIDController(Constants.PIDConstants.Rkp, Constants.PIDConstants.Rki, Constants.PIDConstants.Rkd);
      
     public static double getRoll(double robotRoll) {
-        if(robotRoll < -15) return -0.7; 
+        if(robotRoll < -15) return -0.765; 
         if(Math.abs(robotRoll) <= 7){
             System.out.println("robot roll too low!");
             SmartDashboard.putBoolean("Balanced", true);
