@@ -86,9 +86,9 @@ public class RobotContainer {
         operatorController.y().onTrue(targeter.target(null, HIGH_CENTER));
         operatorController.leftStick().onTrue(targeter.target(null, HIGH_RIGHT));
 
-        operatorController.povLeft().onTrue(targeter.target(Grid.LEFT, null));
+        operatorController.povLeft().whileTrue(new OuttakeCommand(armSubsystem));
         operatorController.povDown().onTrue(targeter.target(Grid.COOP, null));
-        operatorController.povRight().onTrue(targeter.target(Grid.RIGHT, null));
+        operatorController.povRight().whileTrue(new IntakeCommand(armSubsystem));
 
         //LED Controls
         operatorController.rightTrigger().whileTrue(
