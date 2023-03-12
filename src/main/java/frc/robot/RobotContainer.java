@@ -113,7 +113,7 @@ public class RobotContainer {
     public Command getScoreMobilityAuto(){
         return armSubsystem.getStowCommand()
                 .andThen(armSubsystem.getScoreCommand(Height.HIGH))
-                .andThen(new TimerCommand(() -> driveSubsystem.drive(-0.61, 0), 3.5))
+                .andThen(new TimerCommand(() -> driveSubsystem.drive(-0.61, 0), 4.25))
                 .andThen(() -> driveSubsystem.drive(0, 0));
     }
 }
