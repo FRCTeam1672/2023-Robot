@@ -39,6 +39,9 @@ public class GyroSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Gyro Pitch Speed", pitchSpeed);
     }
 
+    /**
+     * @return pitch speed in degress per second
+     */
     public double getPitchSpeed() {
         return pitchSpeed;
     }
