@@ -8,16 +8,14 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.GyroSubsystem;
 
 public class DriveRobotToChargeStation extends CommandBase {
-    private DriveSubsystem drive;
-    private GyroSubsystem gryoSubsystem;
-    private final AHRS gryo;
+    private final DriveSubsystem drive;
+    private final AHRS gyro;
     private boolean isDrivingUp = false;
     private boolean isOnChargeStation = false;
 
-    public DriveRobotToChargeStation(DriveSubsystem drive, GyroSubsystem gryo){
+    public DriveRobotToChargeStation(DriveSubsystem drive, GyroSubsystem gyro){
         this.drive = drive;
-        this.gryoSubsystem = gryo;
-        this.gryo = gryo.getAHRS();
+        this.gyro = gyro.getAHRS();
     }
     @Override
     public void initialize() {
@@ -29,15 +27,15 @@ public class DriveRobotToChargeStation extends CommandBase {
         System.out.println("is on charge station: " + isOnChargeStation );
         SmartDashboard.putBoolean("Driving Up", true);
         SmartDashboard.putBoolean("Driving Up Var", isDrivingUp);
-        if(gryo.getPitch() >= 20){
+        if(gyro.getPitch() >= 20){
             isDrivingUp = true;
             drive.drive(0.70, 0);
         }
-        if(-8 <= gryo.getPitch() && gryo.getPitch() <= 8 ){
+        if(-8 <= gyro.getPitch() && gyro.getPitch() <= 8 ){
             isDrivingUp = false;
             drive.drive(0.70, 0);
         }
-        else if(-55 <= gryo.getPitch() && gryo.getPitch() <= 20 ){
+        else if(-55 <= gyro.getPitch() && gyro.getPitch() <= 20 ){
             isOnChargeStation = true;
         }
     }
