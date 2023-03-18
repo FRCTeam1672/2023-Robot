@@ -11,13 +11,13 @@ public final class Constants {
   public static final class Elevator {
     public static final TunableNumber GROUND_ANGLE = new TunableNumber("Ground Angle", 6);
     public static final TunableNumber HYBRID_ANGLE = new TunableNumber("Hybrid Angle", 6);
-    public static final TunableNumber MID_ANGLE = new TunableNumber("Mid Angle", -123.4);
-    public static final TunableNumber HIGH_ANGLE = new TunableNumber("High Angle", -124);
+    public static final TunableNumber MID_ANGLE = new TunableNumber("Mid Angle", -180);
+    public static final TunableNumber HIGH_ANGLE = new TunableNumber("High Angle", -194);
     public static final TunableNumber SHELF_ANGLE = new TunableNumber("Shelf Angle", -50);
     public static final TunableNumber GROUND_EXTENSION = new TunableNumber("Ground Extension", 6);
     public static final TunableNumber HYBRID_EXTENSION = new TunableNumber("Hybrid Extension", 6);
-    public static final TunableNumber MID_EXTENSION = new TunableNumber("Mid Extension", 50.5);
-    public static final TunableNumber HIGH_EXTENSION = new TunableNumber("High Extension", 121);
+    public static final TunableNumber MID_EXTENSION = new TunableNumber("Mid Extension", 41);
+    public static final TunableNumber HIGH_EXTENSION = new TunableNumber("High Extension", 113);
     public static final TunableNumber SHELF_EXTENSION = new TunableNumber("Shelf Extension", 57);
 
     public static final TunableNumber INTAKE_CUBE_CAP = new TunableNumber("Intake Cube Cap", 60);

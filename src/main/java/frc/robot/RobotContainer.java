@@ -66,15 +66,8 @@ public class RobotContainer {
         // driveController.rightTrigger().onTrue(armSubsystem.getIntakeCommand());
         driveController.rightTrigger().whileTrue(new IntakeCommand(armSubsystem));
         driveController.leftTrigger().whileTrue(new OuttakeCommand(armSubsystem));
-
-        driveController.a().whileTrue(new ExtendElevatorCommand(armSubsystem));
-        driveController.b().whileTrue(new RetractElevatorCommand(armSubsystem));
+        
         driveController.y().onTrue(armSubsystem.getGamePieceStowCommand());
-
-
-        driveController.povDown().onTrue(armSubsystem.getScoreCommand(Node.Height.MID));
-        driveController.povUp().onTrue(armSubsystem.getScoreCommand(Node.Height.HIGH));
-        driveController.povRight().onTrue(armSubsystem.getShelfIntakeCommand());
 
         operatorController.start().onTrue(targeter.target(null, HYBRID_LEFT));
         operatorController.back().onTrue(targeter.target(null, HYBRID_CENTER));

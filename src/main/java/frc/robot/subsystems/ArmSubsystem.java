@@ -47,15 +47,16 @@ public class ArmSubsystem extends SubsystemBase {
         //if (!winchAngleLimitSwitch.get()) {
         if(!winchAngleLimitSwitch.get()) {
             stopWinch();
-        } 
-        else {
+        } else if(winch.getEncoder().getPosition() > -35) {
+            winch.set(0.5);
+        } else {
             winch.set(1);
         }
     }
 
     /** Decrease elevator angle. */
     public void moveDown() {
-        if (winch.getEncoder().getPosition() <= -222) {
+        if (winch.getEncoder().getPosition() <= -360) {
             stopWinch();
             return;
         }
@@ -133,13 +134,14 @@ public class ArmSubsystem extends SubsystemBase {
 
     public Command setAngle(double encoderPosition) {
         double ERROR = 2;
-
+        
         return Commands.run(() -> {
-            double errorDirection = Math.signum(encoderPosition - winch.getEncoder().getPosition());
-            double errorProximity = encoderPosition - winch.getEncoder().getPosition() < 2 * ERROR ? 0.5 : 1;
-            double winchSpeed = errorDirection * errorProximity * 1;
+            // double errorDirection = Math.signum(encoderPosition - winch.getEncoder().getPosition());
+            // double errorProximity = encoderPosition - winch.getEncoder().getPosition() < 2 * ERROR ? 0.5 : 1;
+            // double winchSpeed = errorDirection * errorProximity * 1;
 
-            winch.set(winchSpeed);
+            // winch.set(winchSpeed);
+            moveDown();
         }).until(() -> Math.abs(winch.getEncoder().getPosition() - encoderPosition) < ERROR)
                 .andThen(this::stopWinch);
     }
@@ -158,7 +160,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     public Command getStowCommand() {
         return Commands.parallel(
-                Commands.run(this::retract), Commands.waitSeconds(1).andThen(this::moveUp), Commands.runOnce(this::stopIntake))
+                Commands.run(this::retract), Commands.waitSeconds(1).andThen(Commands.run(this::moveUp)), Commands.runOnce(this::stopIntake))
                 .until(this::isStowed);
     }
 
@@ -178,7 +180,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     public Command getGamePieceStowCommand() {
         return Commands.parallel(
-                Commands.run(this::retractToGamePiece), Commands.waitSeconds(1).andThen(this::moveUp), Commands.runOnce(this::stopIntake))
+                Commands.run(this::retractToGamePiece), Commands.waitSeconds(1).andThen(Commands.run(this::moveUp)), Commands.runOnce(this::stopIntake))
                 .until(this::isGamePieceStowed)
                 .finallyDo(e -> {this.stopWinch(); this.stopElevator();});
     }
@@ -205,15 +207,17 @@ public class ArmSubsystem extends SubsystemBase {
     private Command getScoreMidCommand() {
         return Commands.parallel(
                 setAngle(MID_ANGLE.get()),
-                setExtension(MID_EXTENSION.get())).andThen(new TimerCommand(this::outtake, 1))
-                .finallyDo(e -> getStowCommand().schedule());
+                setExtension(MID_EXTENSION.get()));
+                //.andThen(new TimerCommand(this::outtake, 1))
+                //.finallyDo(e -> getStowCommand().schedule());
     }
 
     private Command getScoreHighCommand() {
         return Commands.parallel(
                 setAngle(HIGH_ANGLE.get()),
-                setExtension(HIGH_EXTENSION.get())).andThen(new TimerCommand(this::outtake, 1))
-                .finallyDo(e -> getStowCommand().schedule());
+                setExtension(HIGH_EXTENSION.get()));
+                //.andThen(new TimerCommand(this::outtake, 1))
+                //.finallyDo(e -> getStowCommand().schedule());
     }
 
     public Command getAutoScoreCommand() {
