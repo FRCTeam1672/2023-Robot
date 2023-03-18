@@ -112,10 +112,10 @@ public class ArmSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("LElevator Encoder: ", lElevator.getEncoder().getPosition());
-        SmartDashboard.putNumber("RElevator Encoder: ", rElevator.getEncoder().getPosition());
-        SmartDashboard.putNumber("Winch Elevator Encoder: ", winch.getEncoder().getPosition());
-        SmartDashboard.putNumber("Intake Current", this.lIntake.getOutputCurrent() + this.rIntake.getOutputCurrent());
+        //SmartDashboard.putNumber("LElevator Encoder: ", lElevator.getEncoder().getPosition());
+        //SmartDashboard.putNumber("RElevator Encoder: ", rElevator.getEncoder().getPosition());
+        //SmartDashboard.putNumber("Winch Elevator Encoder: ", winch.getEncoder().getPosition());
+        //SmartDashboard.putNumber("Intake Current", this.lIntake.getOutputCurrent() + this.rIntake.getOutputCurrent());
         
 
         if (!bottomElevatorLimitSwitch.get()) {

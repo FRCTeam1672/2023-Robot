@@ -4,6 +4,7 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.GyroSubsystem;
 
@@ -24,28 +25,25 @@ public class DriveRobotToChargeStation extends CommandBase {
     }
     @Override
     public void execute() {
-        System.out.println("is on charge station: " + isOnChargeStation );
-        SmartDashboard.putBoolean("Driving Up", true);
-        SmartDashboard.putBoolean("Driving Up Var", isDrivingUp);
-        if(gyro.getPitch() >= 20){
-            isDrivingUp = true;
-            drive.drive(0.70, 0);
+        //Trigger t = new Trigger(() -> gyro.getPitch() > -11).debounce(0.25);
+
+        if(gyro.getPitch() > -11){
+            drive.drive(-0.85, 0);
         }
-        if(-8 <= gyro.getPitch() && gyro.getPitch() <= 8 ){
-            isDrivingUp = false;
-            drive.drive(0.70, 0);
-        }
-        else if(-55 <= gyro.getPitch() && gyro.getPitch() <= 20 ){
+        else if(gyro.getPitch() <= -11 ){
             isOnChargeStation = true;
         }
+        SmartDashboard.putBoolean("Driving up", true);
     }
+
     @Override
     public boolean isFinished() {
         return isOnChargeStation;
     }
+
     @Override
     public void end(boolean interrupted) {
-        SmartDashboard.putBoolean("Driving Up", false);
+        SmartDashboard.putBoolean("Driving up", false);
     }
     
 }

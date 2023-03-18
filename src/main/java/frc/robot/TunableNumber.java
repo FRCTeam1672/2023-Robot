@@ -22,7 +22,7 @@ public class TunableNumber {
     public TunableNumber(String dashboardKey, double defaultValue) {
       this.key = tableKey + "/" + dashboardKey;
       this.dashboardNumber = this.defaultValue = defaultValue;
-      SmartDashboard.putNumber(key, SmartDashboard.getNumber(key, defaultValue));
+      //SmartDashboard.putNumber(key, SmartDashboard.getNumber(key, defaultValue));
     }
   
     /**

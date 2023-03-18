@@ -29,6 +29,10 @@ public class GyroSubsystem extends SubsystemBase {
         return this.gyro;
     }
 
+    public float getPitch() {
+        return gyro.getPitch();
+    }
+
     public void periodic() {
         //speed = (distance) / (time)
         pitchSpeed = (lastPitchAngle - gyro.getPitch()) / pitchTimer.get();

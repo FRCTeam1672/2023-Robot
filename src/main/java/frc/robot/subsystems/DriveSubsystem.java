@@ -40,7 +40,7 @@ public class DriveSubsystem extends SubsystemBase {
         speed += diff;
         speed = Math.min(speed, 0.3); // TODO: determine good mod
         speed = Math.max(speed, 0);
-        SmartDashboard.putNumber("Drive Speed", 0.65 + speed);
+        //SmartDashboard.putNumber("Drive Speed", 0.65 + speed);
     }
 
     @Override

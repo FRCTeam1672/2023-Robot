@@ -11,132 +11,55 @@
         "vgap": 16.0,
         "titleType": 0,
         "tiles": {
-          "0,0": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Target Node",
-              "_title": "Target Node",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "1,0": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/TunableNumbers/Ground Angle",
-              "_title": "TunableNumbers/Ground Angle",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
           "2,0": {
             "size": [
-              1,
-              1
+              3,
+              3
             ],
             "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/TunableNumbers/Hybrid Angle",
-              "_title": "TunableNumbers/Hybrid Angle",
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/Gyro Pitch",
+              "_title": "Gyro Pitch",
               "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "3,0": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/TunableNumbers/Mid Angle",
-              "_title": "TunableNumbers/Mid Angle",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "4,0": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/TunableNumbers/High Angle",
-              "_title": "TunableNumbers/High Angle",
-              "_glyph": 148,
-              "_showGlyph": false
+              "_showGlyph": false,
+              "Graph/Visible time": 30.0,
+              "Graph/X-axis auto scrolling": true,
+              "Y-axis/Automatic bounds": true,
+              "Y-axis/Upper bound": 1.0,
+              "Y-axis/Lower bound": -1.0,
+              "Y-axis/Unit": "ul",
+              "Visible data/SmartDashboard/Gyro Pitch": true
             }
           },
           "5,0": {
             "size": [
-              1,
-              1
+              3,
+              3
             ],
             "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/TunableNumbers/Shelf Angle",
-              "_title": "TunableNumbers/Shelf Angle",
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/Gyro Pitch Speed",
+              "_title": "Gyro Pitch Speed",
               "_glyph": 148,
-              "_showGlyph": false
+              "_showGlyph": false,
+              "Graph/Visible time": 30.0,
+              "Graph/X-axis auto scrolling": true,
+              "Y-axis/Automatic bounds": true,
+              "Y-axis/Upper bound": 1.0,
+              "Y-axis/Lower bound": -1.0,
+              "Y-axis/Unit": "ul",
+              "Visible data/SmartDashboard/Gyro Pitch Speed": true
             }
           },
-          "6,0": {
+          "0,0": {
             "size": [
-              1,
+              2,
               1
             ],
             "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/TunableNumbers/Ground Extension",
-              "_title": "TunableNumbers/Ground Extension",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "7,0": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/TunableNumbers/Hybrid Extension",
-              "_title": "TunableNumbers/Hybrid Extension",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "8,0": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/TunableNumbers/Mid Extension",
-              "_title": "TunableNumbers/Mid Extension",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "0,1": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/TunableNumbers/High Extension",
-              "_title": "TunableNumbers/High Extension",
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/Auto Chooser",
+              "_title": "Auto Chooser",
               "_glyph": 148,
               "_showGlyph": false
             }
@@ -147,161 +70,16 @@
               1
             ],
             "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/TunableNumbers/Shelf Extension",
-              "_title": "TunableNumbers/Shelf Extension",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "2,1": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/TunableNumbers/Intake Cube Cap",
-              "_title": "TunableNumbers/Intake Cube Cap",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "3,1": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/TunableNumbers/Intake Cone Cap",
-              "_title": "TunableNumbers/Intake Cone Cap",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "4,1": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/TunableNumbers/Game Piece Retract",
-              "_title": "TunableNumbers/Game Piece Retract",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "5,1": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
               "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Is Connected",
-              "_title": "Is Connected",
+              "_source0": "network_table:///SmartDashboard/Fully Balanced",
+              "_title": "Fully Balanced",
               "_glyph": 148,
               "_showGlyph": false,
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
             }
           },
-          "6,1": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/ACTUAL GYRO ANGLE",
-              "_title": "ACTUAL GYRO ANGLE",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "7,1": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Balanced",
-              "_title": "Balanced",
-              "_glyph": 148,
-              "_showGlyph": false,
-              "Colors/Color when true": "#7CFC00FF",
-              "Colors/Color when false": "#8B0000FF"
-            }
-          },
-          "8,1": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/FAKE GYRO ANGLE",
-              "_title": "FAKE GYRO ANGLE",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "0,2": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/LElevator Encoder: ",
-              "_title": "LElevator Encoder: ",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "1,2": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/RElevator Encoder: ",
-              "_title": "RElevator Encoder: ",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "2,2": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Winch Elevator Encoder: ",
-              "_title": "Winch Elevator Encoder: ",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "3,2": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Intake Current",
-              "_title": "Intake Current",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "4,2": {
+          "0,1": {
             "size": [
               1,
               1
@@ -404,8 +182,8 @@
     }
   ],
   "windowGeometry": {
-    "x": -6.0,
-    "y": 1.0,
+    "x": -7.0,
+    "y": 2.0,
     "width": 1378.0,
     "height": 733.0
   }
