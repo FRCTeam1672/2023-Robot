@@ -11,71 +11,6 @@
         "vgap": 16.0,
         "titleType": 0,
         "tiles": {
-          "0,0": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Target Node",
-              "_title": "Target Node",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "1,0": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/TunableNumbers/Ground Angle",
-              "_title": "TunableNumbers/Ground Angle",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "2,0": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/TunableNumbers/Hybrid Angle",
-              "_title": "TunableNumbers/Hybrid Angle",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "3,0": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/TunableNumbers/Mid Angle",
-              "_title": "TunableNumbers/Mid Angle",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "4,0": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/TunableNumbers/High Angle",
-              "_title": "TunableNumbers/High Angle",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
           "5,0": {
             "size": [
               1,
@@ -124,71 +59,6 @@
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/TunableNumbers/Mid Extension",
               "_title": "TunableNumbers/Mid Extension",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "0,1": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/TunableNumbers/High Extension",
-              "_title": "TunableNumbers/High Extension",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "1,1": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/TunableNumbers/Shelf Extension",
-              "_title": "TunableNumbers/Shelf Extension",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "2,1": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/TunableNumbers/Intake Cube Cap",
-              "_title": "TunableNumbers/Intake Cube Cap",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "3,1": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/TunableNumbers/Intake Cone Cap",
-              "_title": "TunableNumbers/Intake Cone Cap",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "4,1": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/TunableNumbers/Game Piece Retract",
-              "_title": "TunableNumbers/Game Piece Retract",
               "_glyph": 148,
               "_showGlyph": false
             }
@@ -249,73 +119,6 @@
               "_showGlyph": false
             }
           },
-          "0,2": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/LElevator Encoder: ",
-              "_title": "LElevator Encoder: ",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "1,2": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/RElevator Encoder: ",
-              "_title": "RElevator Encoder: ",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "2,2": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Winch Elevator Encoder: ",
-              "_title": "Winch Elevator Encoder: ",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "3,2": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Intake Current",
-              "_title": "Intake Current",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "4,2": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Driving up",
-              "_title": "Driving up",
-              "_glyph": 148,
-              "_showGlyph": false,
-              "Colors/Color when true": "#7CFC00FF",
-              "Colors/Color when false": "#8B0000FF"
-            }
-          },
           "5,2": {
             "size": [
               1,
@@ -357,6 +160,40 @@
               "_showGlyph": false,
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "8,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Substation distance",
+              "_title": "Substation distance",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "0,0": {
+            "size": [
+              3,
+              2
+            ],
+            "content": {
+              "_type": "Camera Stream",
+              "_source0": "camera_server://photonvision_Port_1181_MJPEG_Server",
+              "_title": "photonvision_Port_1181_MJPEG_Server",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Crosshair/Show crosshair": true,
+              "Crosshair/Crosshair color": "#FFFFFFFF",
+              "Controls/Show controls": true,
+              "Controls/Rotation": "NONE",
+              "compression": -1.0,
+              "fps": -1,
+              "imageWidth": 0,
+              "imageHeight": 0
             }
           }
         }
@@ -447,9 +284,9 @@
     }
   ],
   "windowGeometry": {
-    "x": -7.0,
-    "y": 2.0,
-    "width": 1378.0,
-    "height": 733.0
+    "x": -8.0,
+    "y": -8.0,
+    "width": 1382.0,
+    "height": 744.0
   }
 }

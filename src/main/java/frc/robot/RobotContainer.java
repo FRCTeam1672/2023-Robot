@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Node.Height;
 import frc.robot.Targeter.Grid;
+import frc.robot.commands.auto.AutoSubstation;
 import frc.robot.commands.auto.BalanceRobot;
 import frc.robot.commands.auto.DriveRobotToChargeStation;
 import frc.robot.commands.elevator.*;
@@ -21,6 +22,7 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.GyroSubsystem;
 import frc.robot.subsystems.LEDLightSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 
 import static frc.robot.Targeter.Nodes.*;
 import static frc.robot.subsystems.LEDLightSubsystem.LedState.*;
@@ -45,6 +47,8 @@ public class RobotContainer {
     private final GyroSubsystem gyroSubsystem = new GyroSubsystem();
     private final ArmSubsystem armSubsystem = new ArmSubsystem();
 
+    private final VisionSubsystem vision = new VisionSubsystem();
+
     private final SendableChooser<Command> autos = new SendableChooser<>();
 
     public SendableChooser<Command> getAutos() {
@@ -68,6 +72,7 @@ public class RobotContainer {
         driveController.leftTrigger().whileTrue(new OuttakeCommand(armSubsystem));
         
         driveController.y().onTrue(armSubsystem.getGamePieceStowCommand());
+        driveController.y().whileTrue(new AutoSubstation(driveSubsystem, vision));
 
         operatorController.start().onTrue(targeter.target(null, HYBRID_LEFT));
         operatorController.back().onTrue(targeter.target(null, HYBRID_CENTER));
