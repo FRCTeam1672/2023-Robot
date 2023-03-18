@@ -24,9 +24,9 @@
               "_showGlyph": false,
               "Graph/Visible time": 30.0,
               "Graph/X-axis auto scrolling": true,
-              "Y-axis/Automatic bounds": true,
-              "Y-axis/Upper bound": 1.0,
-              "Y-axis/Lower bound": -1.0,
+              "Y-axis/Automatic bounds": false,
+              "Y-axis/Upper bound": 40.0,
+              "Y-axis/Lower bound": -40.0,
               "Y-axis/Unit": "ul",
               "Visible data/SmartDashboard/Gyro Pitch": true
             }
@@ -44,9 +44,9 @@
               "_showGlyph": false,
               "Graph/Visible time": 30.0,
               "Graph/X-axis auto scrolling": true,
-              "Y-axis/Automatic bounds": true,
-              "Y-axis/Upper bound": 1.0,
-              "Y-axis/Lower bound": -1.0,
+              "Y-axis/Automatic bounds": false,
+              "Y-axis/Upper bound": 60.0,
+              "Y-axis/Lower bound": -60.0,
               "Y-axis/Unit": "ul",
               "Visible data/SmartDashboard/Gyro Pitch Speed": true
             }
@@ -182,9 +182,9 @@
     }
   ],
   "windowGeometry": {
-    "x": -7.0,
-    "y": 2.0,
-    "width": 1378.0,
-    "height": 733.0
+    "x": -8.0,
+    "y": -8.0,
+    "width": 1382.0,
+    "height": 744.0
   }
 }
