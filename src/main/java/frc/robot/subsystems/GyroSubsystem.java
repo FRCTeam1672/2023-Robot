@@ -20,8 +20,8 @@ public class GyroSubsystem extends SubsystemBase {
     }
 
     public void periodic() {
-        SmartDashboard.putBoolean("Is Connected", ahrs.isConnected());
-        SmartDashboard.putNumber("ACTUAL GYRO ANGLE", ahrs.getPitch());
-        SmartDashboard.putNumber("FAKE GYRO ANGLE", GyroUtils.getRoll(ahrs.getPitch()));
+        //SmartDashboard.putBoolean("Is Connected", ahrs.isConnected());
+        //SmartDashboard.putNumber("ACTUAL GYRO ANGLE", ahrs.getPitch());
+        //SmartDashboard.putNumber("FAKE GYRO ANGLE", GyroUtils.getRoll(ahrs.getPitch()));
     }
 }

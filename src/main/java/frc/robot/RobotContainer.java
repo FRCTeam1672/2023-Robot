@@ -56,7 +56,7 @@ public class RobotContainer {
         CameraServer.startAutomaticCapture();
         autos.setDefaultOption("Mobility", getScoreMobilityAuto());
         autos.addOption("Engage Charge Station", getChargeStationAuto());
-        SmartDashboard.putData("Select Auto", autos);
+        //SmartDashboard.putData("Select Auto", autos);
     }
 
     private void bindBindings() {

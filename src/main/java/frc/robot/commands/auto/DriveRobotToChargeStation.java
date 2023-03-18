@@ -30,7 +30,7 @@ public class DriveRobotToChargeStation extends CommandBase {
         else if(gyro.getPitch() <= -10 ){
             isOnChargeStation = true;
         }
-        SmartDashboard.putBoolean("Driving up", true);
+        //SmartDashboard.putBoolean("Driving up", true);
     }
     @Override
     public boolean isFinished() {
@@ -38,7 +38,7 @@ public class DriveRobotToChargeStation extends CommandBase {
     }
     @Override
     public void end(boolean interrupted) {
-        SmartDashboard.putBoolean("Driving up", false);
+        //SmartDashboard.putBoolean("Driving up", false);
     }
     
 }

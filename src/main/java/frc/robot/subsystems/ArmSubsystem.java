@@ -117,7 +117,7 @@ public class ArmSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("LElevator Encoder: ", lElevator.getEncoder().getPosition());
         SmartDashboard.putNumber("RElevator Encoder: ", rElevator.getEncoder().getPosition());
         SmartDashboard.putNumber("Winch Elevator Encoder: ", winch.getEncoder().getPosition());
-        SmartDashboard.putNumber("Intake Current", this.lIntake.getOutputCurrent() + this.rIntake.getOutputCurrent());
+        //SmartDashboard.putNumber("Intake Current", this.lIntake.getOutputCurrent() + this.rIntake.getOutputCurrent());
         
         SmartDashboard.putBoolean("Elevator Limit Switch", !bottomElevatorLimitSwitch.get());
         SmartDashboard.putBoolean("Winch Limit Switch", !winchAngleLimitSwitch.get());

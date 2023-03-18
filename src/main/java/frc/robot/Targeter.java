@@ -18,7 +18,7 @@ public class Targeter {
         if(grid != null) targetGrid = grid;
         if(node != null) targetNode = node;
 
-        SmartDashboard.putString("Target Node", targetNode.toString());
+        //SmartDashboard.putString("Target Node", targetNode.toString());
     }
     public Command target(Grid grid, Node node) {
         return Commands.runOnce(() -> setTarget(grid, node));
