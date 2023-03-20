@@ -4,3 +4,7 @@ left thumb - home
 right thumb - auto substation
 right bumper - intake
 left bumper - outtake
+button y - elevator up
+button a - elevator down
+button b - auto high scoring
+button x - auto mid scoring

@@ -69,31 +69,25 @@ public class RobotContainer {
         driveController.leftTrigger().whileTrue(new OuttakeCommand(armSubsystem));
         
         driveController.y().onTrue(armSubsystem.getGamePieceStowCommand());
-        driveController.y().whileTrue(new AutoSubstation(driveSubsystem, vision));
 
-        operatorController.start().onTrue(targeter.target(null, HYBRID_LEFT));
-        operatorController.back().onTrue(targeter.target(null, HYBRID_CENTER));
-        operatorController.leftBumper().onTrue(targeter.target(null, HYBRID_RIGHT));
-        operatorController.rightBumper().onTrue(targeter.target(null, MID_LEFT));
-        operatorController.a().onTrue(targeter.target(null, MID_CENTER));
-        operatorController.b().onTrue(targeter.target(null, MID_RIGHT));
-        operatorController.x().onTrue(targeter.target(null, HIGH_LEFT));
-        operatorController.y().onTrue(targeter.target(null, HIGH_CENTER));
-        operatorController.leftStick().onTrue(targeter.target(null, HIGH_RIGHT));
+        //TODO Remove this before comp
+        driveController.b().whileTrue(new AutoSubstation(driveSubsystem, vision));
 
-        operatorController.povLeft().whileTrue(new OuttakeCommand(armSubsystem));
-        operatorController.povDown().onTrue(targeter.target(Grid.COOP, null));
-        operatorController.povRight().whileTrue(new IntakeCommand(armSubsystem));
 
-        //LED Controls
-        operatorController.rightTrigger().whileTrue(
-                Commands.run(() -> ledLightSubsystem.setColor(YELLOW))
-                        .handleInterrupt(() -> ledLightSubsystem.setColor(RAINBOW))
-        );
-        operatorController.leftTrigger().whileTrue(
-                Commands.run(() -> ledLightSubsystem.setColor(PURPLE))
-                        .handleInterrupt(() -> ledLightSubsystem.setColor(RAINBOW))
-        );
+       operatorController.back().whileTrue(Commands.run(() -> ledLightSubsystem.setColor(PURPLE))
+       .handleInterrupt(() -> ledLightSubsystem.setColor(RAINBOW)));
+       operatorController.start().whileTrue(Commands.run(() -> ledLightSubsystem.setColor(YELLOW))
+       .handleInterrupt(() -> ledLightSubsystem.setColor(RAINBOW)));
+
+       operatorController.leftStick().onTrue(armSubsystem.getGamePieceStowCommand());
+       operatorController.rightStick().onTrue(armSubsystem.getShelfIntakeCommand());
+       operatorController.rightBumper().whileTrue(new IntakeCommand(armSubsystem));
+       operatorController.leftBumper().whileTrue(new OuttakeCommand(armSubsystem));
+       operatorController.y().whileTrue(new MoveElevatorUpCommand(armSubsystem));
+       operatorController.a().whileTrue(new MoveElevatorDownCommand(armSubsystem));
+       operatorController.b().onTrue(armSubsystem.getScoreCommand(Height.HIGH));
+       operatorController.x().onTrue(armSubsystem.getScoreCommand(Height.MID));
+
     }
     public SendableChooser<Command> getAutos() {
         return autos;
