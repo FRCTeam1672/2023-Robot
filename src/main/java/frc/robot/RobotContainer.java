@@ -68,7 +68,11 @@ public class RobotContainer {
         driveController.rightTrigger().whileTrue(new IntakeCommand(armSubsystem));
         driveController.leftTrigger().whileTrue(new OuttakeCommand(armSubsystem));
         
+        driveController.x().whileTrue(new AutoSubstation(driveSubsystem, vision));
         driveController.y().onTrue(armSubsystem.getGamePieceStowCommand());
+
+        driveController.a().whileTrue(new ExtendElevatorCommand(armSubsystem));
+        driveController.b().whileTrue(new RetractElevatorCommand(armSubsystem));
 
         //TODO Remove this before comp
         driveController.b().whileTrue(new AutoSubstation(driveSubsystem, vision));

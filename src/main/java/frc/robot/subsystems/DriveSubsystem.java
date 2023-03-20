@@ -18,6 +18,8 @@ public class DriveSubsystem extends SubsystemBase {
 
     private final CommandXboxController xboxController;
 
+    private boolean isAuto = false;
+
     private double speed = 0.2;
 
     public DriveSubsystem(CommandXboxController controller) {
@@ -45,7 +47,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if(DriverStation.isAutonomous()) return;
+        if(DriverStation.isAutonomous() || isAuto) return;
 
 
         //grab controller X and Y vales
@@ -56,5 +58,9 @@ public class DriveSubsystem extends SubsystemBase {
     }
     public void drive(double xSpeed, double zSpeed) {
         drive.arcadeDrive(xSpeed, -zSpeed);
+    }
+
+    public void isAuto(boolean b) {
+        isAuto = b;
     }
 }

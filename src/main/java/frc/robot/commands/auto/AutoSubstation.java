@@ -14,11 +14,16 @@ public class AutoSubstation extends CommandBase{
     }
     @Override
     public void execute() {
-        if(visionSubsystem.getDistanceFromSubstation() == -1 || visionSubsystem.getDistanceFromSubstation() < 2){
+        drive.isAuto(true);
+        if(visionSubsystem.getDistanceFromSubstation() == -1 || visionSubsystem.getDistanceFromSubstation() < 1.5){
             drive.drive(0, 0);
             return;
         }
         drive.drive(0.6, 0);
+    }
+    @Override
+    public void end(boolean interrupted) {
+        drive.isAuto(false);
     }
     
 }
