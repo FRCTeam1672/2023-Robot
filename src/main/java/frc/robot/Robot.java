@@ -69,6 +69,8 @@ public class Robot extends TimedRobot {
     if (autoCommand != null) {
       autoCommand.cancel();
     }
+    CommandScheduler.getInstance().cancelAll();
+
   }
 
   /** This function is called periodically during operator control. */

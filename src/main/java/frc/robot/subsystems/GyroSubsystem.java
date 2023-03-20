@@ -34,13 +34,15 @@ public class GyroSubsystem extends SubsystemBase {
     }
 
     public void periodic() {
-        //speed = (distance) / (time)
+        /*
+        speed = (distance) / (time)
         pitchSpeed = (lastPitchAngle - gyro.getPitch()) / pitchTimer.get();
         lastPitchAngle = gyro.getPitch();
         pitchTimer.reset();
 
         SmartDashboard.putNumber("Gyro Pitch", gyro.getPitch());
         SmartDashboard.putNumber("Gyro Pitch Speed", pitchSpeed);
+        */
     }
 
     /**
@@ -48,5 +50,8 @@ public class GyroSubsystem extends SubsystemBase {
      */
     public double getPitchSpeed() {
         return pitchSpeed;
+        //SmartDashboard.putBoolean("Is Connected", ahrs.isConnected());
+        //SmartDashboard.putNumber("ACTUAL GYRO ANGLE", ahrs.getPitch());
+        //SmartDashboard.putNumber("FAKE GYRO ANGLE", GyroUtils.getRoll(ahrs.getPitch()));
     }
 }

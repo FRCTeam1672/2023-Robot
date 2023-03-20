@@ -10,7 +10,7 @@ import java.util.function.BiConsumer;
 
 public class LEDLightSubsystem extends SubsystemBase {
     private final AddressableLED addressableLED = new AddressableLED(7);
-    private final AddressableLEDBuffer addressableLEDBuffer = new AddressableLEDBuffer(150);
+    private final AddressableLEDBuffer addressableLEDBuffer = new AddressableLEDBuffer(149);
     private LedState currentState = LedState.REDPULSE;
     private final PersistentLedState persistentLedState = new PersistentLedState();
 
@@ -43,18 +43,18 @@ public class LEDLightSubsystem extends SubsystemBase {
         REDPULSE((ledBuffer, persistentState) -> {
             int intensity = 255 - persistentState.pulseOffset;
             for (int i = 0; i < ledBuffer.getLength() / 2 + 1; i++) {
-                ledBuffer.setRGB(i, (intensity + i) % 255, 0, 0);
-                ledBuffer.setRGB(ledBuffer.getLength()-1-i, (intensity + i) % 255, 0, 0);
+                ledBuffer.setRGB(i, (intensity + 25*i) % 255, 0, 0);
+                ledBuffer.setRGB(ledBuffer.getLength()-1-i, (intensity + 25*i) % 255, 0, 0);
             }
-            persistentState.pulseOffset = (persistentState.pulseOffset + 7) % 255;
+            persistentState.pulseOffset = (persistentState.pulseOffset + 15) % 255;
         }),
         BLUEPULSE((ledBuffer, persistentState) -> {
             int intensity = 255 - persistentState.pulseOffset;
             for (int i = 0; i < ledBuffer.getLength() / 2 + 1; i++) {
-                ledBuffer.setRGB(i, 0, 0, (intensity + i) % 255);
-                ledBuffer.setRGB(ledBuffer.getLength()-1-i, 0, 0, (intensity + i) % 255);
+                ledBuffer.setRGB(i, 0, 0, (intensity + 25*i) % 255);
+                ledBuffer.setRGB(ledBuffer.getLength()-1-i, 0, 0, (intensity + 25*i) % 255);
             }
-            persistentState.pulseOffset = (persistentState.pulseOffset + 7) % 255;
+            persistentState.pulseOffset = (persistentState.pulseOffset + 15) % 255;
         }),
         RAINBOW((ledBuffer, persistentState) -> {
             for (int i = 0; i < ledBuffer.getLength(); i++) {
