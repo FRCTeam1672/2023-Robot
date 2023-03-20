@@ -47,18 +47,10 @@ public class RobotContainer {
     private final GyroSubsystem gyroSubsystem = new GyroSubsystem();
     private final ArmSubsystem armSubsystem = new ArmSubsystem();
     private final SendableChooser<Command> autos = new SendableChooser<>();
-
-    public SendableChooser<Command> getAutos() {
-        return autos;
-    }
-
     private final VisionSubsystem vision = new VisionSubsystem();
 
-    private final SendableChooser<Command> autos = new SendableChooser<>();
 
-    public SendableChooser<Command> getAutos() {
-        return autos;
-    }
+
 
     public RobotContainer() {
         bindBindings();
@@ -103,12 +95,15 @@ public class RobotContainer {
                         .handleInterrupt(() -> ledLightSubsystem.setColor(RAINBOW))
         );
     }
+    public SendableChooser<Command> getAutos() {
+        return autos;
+    }
     public Command getChargeStationAuto() {
         return armSubsystem
                 .getStowCommand()
                 .andThen(
                     new DriveRobotToChargeStation(driveSubsystem, gyroSubsystem)
-                    .andThen(new TimerCommand(() -> driveSubsystem.drive(-0.785, 0), 0.8));
+                    .andThen(new TimerCommand(() -> driveSubsystem.drive(-0.785, 0), 0.8)));
                 //)
                 // .andThen(new BalanceRobot(gyroSubsystem, driveSubsystem));
 
