@@ -46,6 +46,11 @@ public class RobotContainer {
     private final DriveSubsystem driveSubsystem = new DriveSubsystem(driveController);
     private final GyroSubsystem gyroSubsystem = new GyroSubsystem();
     private final ArmSubsystem armSubsystem = new ArmSubsystem();
+    private final SendableChooser<Command> autos = new SendableChooser<>();
+
+    public SendableChooser<Command> getAutos() {
+        return autos;
+    }
 
     private final VisionSubsystem vision = new VisionSubsystem();
 
@@ -60,7 +65,7 @@ public class RobotContainer {
         CameraServer.startAutomaticCapture();
         autos.setDefaultOption("Mobility", getScoreMobilityAuto());
         autos.addOption("Engage Charge Station", getChargeStationAuto());
-        //SmartDashboard.putData("Select Auto", autos);
+        SmartDashboard.putData("Select Auto", autos);
     }
 
     private void bindBindings() {
@@ -98,14 +103,14 @@ public class RobotContainer {
                         .handleInterrupt(() -> ledLightSubsystem.setColor(RAINBOW))
         );
     }
-
     public Command getChargeStationAuto() {
         return armSubsystem
                 .getStowCommand()
                 .andThen(
                     new DriveRobotToChargeStation(driveSubsystem, gyroSubsystem)
-                )
-                .andThen(new BalanceRobot(gyroSubsystem, driveSubsystem));
+                    .andThen(new TimerCommand(() -> driveSubsystem.drive(-0.785, 0), 0.8));
+                //)
+                // .andThen(new BalanceRobot(gyroSubsystem, driveSubsystem));
 
     }
     public Command getScoreMobilityAuto(){

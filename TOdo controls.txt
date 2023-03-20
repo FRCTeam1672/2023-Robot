@@ -1,0 +1,6 @@
+start - yellow
+back - purple
+left thumb - home
+right thumb - auto substation
+right bumper - intake
+left bumper - outtake
