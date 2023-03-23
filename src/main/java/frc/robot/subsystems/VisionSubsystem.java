@@ -24,6 +24,7 @@ public class VisionSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Substation distance", getDistanceFromSubstation());
+        SmartDashboard.putBoolean("Substation Visible", getDistanceFromSubstation() != -1);
     }
 
     

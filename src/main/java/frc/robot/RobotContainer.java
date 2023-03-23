@@ -74,10 +74,6 @@ public class RobotContainer {
         driveController.a().whileTrue(new ExtendElevatorCommand(armSubsystem));
         driveController.b().whileTrue(new RetractElevatorCommand(armSubsystem));
 
-        //TODO Remove this before comp
-        driveController.b().whileTrue(new AutoSubstation(driveSubsystem, vision));
-
-
        operatorController.back().whileTrue(Commands.run(() -> ledLightSubsystem.setColor(PURPLE))
        .handleInterrupt(() -> ledLightSubsystem.setColor(RAINBOW)));
        operatorController.start().whileTrue(Commands.run(() -> ledLightSubsystem.setColor(YELLOW))
@@ -109,7 +105,9 @@ public class RobotContainer {
     public Command getScoreMobilityAuto(){
         return armSubsystem.getStowCommand()
                 .andThen(armSubsystem.getScoreCommand(Height.HIGH))
-                .andThen(new TimerCommand(() -> driveSubsystem.drive(-0.61, 0), 4.25))
+                .andThen(new TimerCommand(armSubsystem::outtake, 3))
+                .andThen(Commands.runOnce(armSubsystem::stopIntake))
+                .andThen(Commands.parallel(armSubsystem.getStowCommand(), new TimerCommand(() -> driveSubsystem.drive(-0.61, 0), 4.25)))
                 .andThen(() -> driveSubsystem.drive(0, 0));
     }
 }

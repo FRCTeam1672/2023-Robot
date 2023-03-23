@@ -17,7 +17,7 @@ public final class Constants {
     public static final TunableNumber GROUND_EXTENSION = new TunableNumber("Ground Extension", 6);
     public static final TunableNumber HYBRID_EXTENSION = new TunableNumber("Hybrid Extension", 6);
     public static final TunableNumber MID_EXTENSION = new TunableNumber("Mid Extension", 41);
-    public static final TunableNumber HIGH_EXTENSION = new TunableNumber("High Extension", 113);
+    public static final TunableNumber HIGH_EXTENSION = new TunableNumber("High Extension", 120);
     public static final TunableNumber SHELF_EXTENSION = new TunableNumber("Shelf Extension", 98);
 
     public static final TunableNumber INTAKE_CUBE_CAP = new TunableNumber("Intake Cube Cap", 60);

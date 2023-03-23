@@ -18,6 +18,10 @@ public class DriveSubsystem extends SubsystemBase {
 
     private final CommandXboxController xboxController;
 
+    public CommandXboxController getXboxController() {
+        return xboxController;
+    }
+
     private boolean isAuto = false;
 
     private double speed = 0.2;
@@ -62,5 +66,9 @@ public class DriveSubsystem extends SubsystemBase {
 
     public void isAuto(boolean b) {
         isAuto = b;
+    }
+
+    public void stop() {
+        drive.stopMotor();
     }
 }
