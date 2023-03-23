@@ -57,6 +57,7 @@ public class RobotContainer {
         CameraServer.startAutomaticCapture();
         autos.setDefaultOption("Mobility", getScoreMobilityAuto());
         autos.addOption("Engage Charge Station", getChargeStationAuto());
+        autos.addOption("Dock Charge Station", getDockingAuto());
         SmartDashboard.putData("Select Auto", autos);
     }
 
@@ -97,17 +98,28 @@ public class RobotContainer {
                 .getStowCommand()
                 .andThen(
                     new DriveRobotToChargeStation(driveSubsystem, gyroSubsystem)
-                    .andThen(new TimerCommand(() -> driveSubsystem.drive(-0.785, 0), 0.8)));
-                //)
-                // .andThen(new BalanceRobot(gyroSubsystem, driveSubsystem));
+                    .andThen(new TimerCommand(() -> driveSubsystem.drive(-0.785, 0), 0.8))
+                );
+            
+
+    }
+    public Command getDockingAuto() {
+        return armSubsystem
+                .getStowCommand()
+                .andThen(
+                    new DriveRobotToChargeStation(driveSubsystem, gyroSubsystem)
+                    .andThen(new TimerCommand(() -> driveSubsystem.drive(-0.785, 0), 0.3))
+                    .andThen(new TimerCommand(() -> driveSubsystem.drive(0, 0.5), 0.4))
+                );
 
     }
     public Command getScoreMobilityAuto(){
         return armSubsystem.getStowCommand()
                 .andThen(armSubsystem.getScoreCommand(Height.HIGH))
-                .andThen(new TimerCommand(armSubsystem::outtake, 3))
+                .andThen(new TimerCommand(armSubsystem::outtake, 2))
                 .andThen(Commands.runOnce(armSubsystem::stopIntake))
                 .andThen(Commands.parallel(armSubsystem.getStowCommand(), new TimerCommand(() -> driveSubsystem.drive(-0.61, 0), 4.25)))
-                .andThen(() -> driveSubsystem.drive(0, 0));
+                .andThen(() -> driveSubsystem.drive(0, 0)
+            );
     }
 }
