@@ -8,3 +8,5 @@ button y - elevator up
 button a - elevator down
 button b - auto high scoring
 button x - auto mid scoring
+dpad up - extend elevator
+dpan down - retract elevator

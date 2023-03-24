@@ -8,6 +8,7 @@ import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Node.Height;
@@ -88,7 +89,9 @@ public class RobotContainer {
        operatorController.a().whileTrue(new MoveElevatorDownCommand(armSubsystem));
        operatorController.b().onTrue(armSubsystem.getScoreCommand(Height.HIGH));
        operatorController.x().onTrue(armSubsystem.getScoreCommand(Height.MID));
-
+       operatorController.povUp().whileTrue(new ExtendElevatorCommand(armSubsystem));
+       operatorController.povDown().whileTrue(new RetractElevatorCommand(armSubsystem));
+       operatorController.povLeft().onTrue(Commands.runOnce(() -> CommandScheduler.getInstance().cancelAll()));
     }
     public SendableChooser<Command> getAutos() {
         return autos;
@@ -108,8 +111,9 @@ public class RobotContainer {
                 .getStowCommand()
                 .andThen(
                     new DriveRobotToChargeStation(driveSubsystem, gyroSubsystem)
-                    .andThen(new TimerCommand(() -> driveSubsystem.drive(-0.785, 0), 0.3))
-                    .andThen(new TimerCommand(() -> driveSubsystem.drive(0, 0.5), 0.4))
+                    .andThen(new TimerCommand(() -> driveSubsystem.drive(-0.785, 0), 0.835))
+                    .andThen(new TimerCommand(() -> driveSubsystem.drive(0, 0.86), 0.5))
+                    .andThen(driveSubsystem::stop)
                 );
 
     }
