@@ -1,14 +1,6 @@
 package frc.robot.subsystems;
 
 import static frc.robot.Constants.Elevator.*;
-import static frc.robot.Constants.Elevator.HIGH_ANGLE;
-import static frc.robot.Constants.Elevator.HIGH_EXTENSION;
-import static frc.robot.Constants.Elevator.INTAKE_CONE_CAP;
-import static frc.robot.Constants.Elevator.INTAKE_CUBE_CAP;
-import static frc.robot.Constants.Elevator.MID_ANGLE;
-import static frc.robot.Constants.Elevator.MID_EXTENSION;
-import static frc.robot.Constants.Elevator.SHELF_ANGLE;
-import static frc.robot.Constants.Elevator.SHELF_EXTENSION;
     
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -255,6 +247,11 @@ public class ArmSubsystem extends SubsystemBase {
             default:
                 return null;
         }
+    }
+    public Command getFramePerimeterCommand(){
+        return getStowCommand()
+            .andThen(setAngle(START_POS.get()))
+            .andThen(this::stopWinch); 
     }
 
     public Command getShelfIntakeCommand() {

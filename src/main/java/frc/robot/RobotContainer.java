@@ -43,11 +43,13 @@ public class RobotContainer {
     private final CommandXboxController operatorController = new CommandXboxController(1);
 
     private final LEDLightSubsystem ledLightSubsystem = new LEDLightSubsystem();
-    private final Targeter targeter = new Targeter();
 
     private final DriveSubsystem driveSubsystem = new DriveSubsystem(driveController);
     private final GyroSubsystem gyroSubsystem = new GyroSubsystem();
     private final ArmSubsystem armSubsystem = new ArmSubsystem();
+    public ArmSubsystem getArmSubsystem() {
+        return armSubsystem;
+    }
     private final SendableChooser<Command> autos = new SendableChooser<>();
     private final VisionSubsystem vision = new VisionSubsystem();
 
@@ -62,6 +64,8 @@ public class RobotContainer {
         //autos.addOption("Engage Charge Station", getChargeStationAuto());
         autos.addOption("Dock Charge Station", getDockingAuto());
         SmartDashboard.putData("Select Auto", autos);
+
+        SmartDashboard.putData("Frame Perimeter", armSubsystem.getFramePerimeterCommand().asProxy());
     }
 
     private void bindBindings() {
