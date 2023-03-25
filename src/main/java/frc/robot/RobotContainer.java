@@ -73,7 +73,10 @@ public class RobotContainer {
         driveController.leftTrigger().whileTrue(new OuttakeCommand(armSubsystem));
         
         driveController.x().whileTrue(new AutoSubstation(driveSubsystem, vision));
-        driveController.y().onTrue(armSubsystem.getGamePieceStowCommand());
+        driveController.y().onTrue(Commands.runOnce(() -> {
+            CommandScheduler.getInstance().cancelAll();
+            armSubsystem.getGamePieceStowCommand().schedule();
+           }));
 
         driveController.a().whileTrue(new ExtendElevatorCommand(armSubsystem));
         driveController.b().whileTrue(new RetractElevatorCommand(armSubsystem));
@@ -83,7 +86,10 @@ public class RobotContainer {
        operatorController.start().whileTrue(Commands.run(() -> ledLightSubsystem.setColor(YELLOW))
        .handleInterrupt(() -> ledLightSubsystem.setColor(RAINBOW)));
 
-       operatorController.leftStick().onTrue(armSubsystem.getGamePieceStowCommand());
+       operatorController.leftStick().onTrue(Commands.runOnce(() -> {
+        CommandScheduler.getInstance().cancelAll();
+        armSubsystem.getGamePieceStowCommand().schedule();
+       }));
        operatorController.rightStick().onTrue(armSubsystem.getShelfIntakeCommand());
        operatorController.rightBumper().whileTrue(new IntakeCommand(armSubsystem));
        operatorController.leftBumper().whileTrue(new OuttakeCommand(armSubsystem));

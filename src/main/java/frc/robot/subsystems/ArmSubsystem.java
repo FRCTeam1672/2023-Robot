@@ -1,6 +1,6 @@
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.Elevator.GAME_PIECE_RETRACT;
+import static frc.robot.Constants.Elevator.*;
 import static frc.robot.Constants.Elevator.HIGH_ANGLE;
 import static frc.robot.Constants.Elevator.HIGH_EXTENSION;
 import static frc.robot.Constants.Elevator.INTAKE_CONE_CAP;
@@ -9,7 +9,7 @@ import static frc.robot.Constants.Elevator.MID_ANGLE;
 import static frc.robot.Constants.Elevator.MID_EXTENSION;
 import static frc.robot.Constants.Elevator.SHELF_ANGLE;
 import static frc.robot.Constants.Elevator.SHELF_EXTENSION;
-
+    
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -17,6 +17,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -158,10 +159,12 @@ public class ArmSubsystem extends SubsystemBase {
                 .andThen(this::stopElevator);
     }
 
-    public Command getStowCommand() {
-        return Commands.parallel(
+    public CommandBase getStowCommand() {
+        CommandBase stow = Commands.parallel(
                 Commands.run(this::retract), Commands.waitSeconds(1).andThen(Commands.run(this::moveUp)), Commands.runOnce(this::stopIntake))
                 .until(this::isStowed);
+                // stow.addRequirements(this);
+                return stow;
     }
 
     public boolean isGamePieceStowed() {
@@ -179,10 +182,12 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public Command getGamePieceStowCommand() {
-        return Commands.parallel(
+        CommandBase stow = Commands.parallel(
                 Commands.run(this::retractToGamePiece), Commands.waitSeconds(1).andThen(Commands.run(this::moveUp)), Commands.runOnce(this::stopIntake))
                 .until(this::isGamePieceStowed)
                 .finallyDo(e -> {this.stopWinch(); this.stopElevator();});
+        // stow.addRequirements(this);
+        return stow;
     }
 
     public Command getConeIntakeCommand() {
@@ -199,12 +204,12 @@ public class ArmSubsystem extends SubsystemBase {
         return Commands.sequence(new TimerCommand(this::intake, 0.8), intakeCommandRaw);
     }
 
-    private Command getScoreHybridCommand() {
+    private CommandBase getScoreHybridCommand() {
         return new TimerCommand(this::outtake, 1)
                 .finallyDo(e -> getStowCommand().schedule());
     }
 
-    private Command getScoreMidCommand() {
+    private CommandBase getScoreMidCommand() {
         return Commands.parallel(
                 setAngle(MID_ANGLE.get()),
                 setExtension(MID_EXTENSION.get()));
@@ -212,14 +217,12 @@ public class ArmSubsystem extends SubsystemBase {
                 //.finallyDo(e -> getStowCommand().schedule());
     }
     private Command getStartPosition() {
-        return Commands.parallel(
-                setAngle(MID_ANGLE.get()),
-                setExtension(MID_EXTENSION.get()));
+        return setAngle(START_POS.get());
                 //.andThen(new TimerCommand(this::outtake, 1))
                 //.finallyDo(e -> getStowCommand().schedule());
     }
 
-    private Command getScoreHighCommand() {
+    private CommandBase getScoreHighCommand() {
         return Commands.parallel(
                 setAngle(HIGH_ANGLE.get()),
                 setExtension(HIGH_EXTENSION.get()));
@@ -227,30 +230,39 @@ public class ArmSubsystem extends SubsystemBase {
                 //.finallyDo(e -> getStowCommand().schedule());
     }
 
-    public Command getAutoScoreCommand() {
+    public CommandBase getAutoScoreCommand() {
         return Commands.parallel(
                 setAngle(HIGH_ANGLE.get()),
                 setExtension(HIGH_EXTENSION.get())).andThen(new TimerCommand(this::outtake, 0.5))
                 .andThen(getStowCommand());
     }
 
-    public Command getScoreCommand(Node.Height nodeHeight) {
+    public CommandBase getScoreCommand(Node.Height nodeHeight) {
+        CommandBase score = null;
         switch (nodeHeight) {
             case HIGH:
-                return getScoreHighCommand();
+                score = getScoreHighCommand();
+                // score.addRequirements(this);
+                return score;
             case MID:
-                return getScoreMidCommand();
+                score = getScoreMidCommand();
+                // score.addRequirements(this);
+                return score;
             case HYBRID:
-                return getScoreHybridCommand();
+                score = getScoreHybridCommand();
+                // score.addRequirements(this);
+                return score;
             default:
                 return null;
         }
     }
 
     public Command getShelfIntakeCommand() {
-        return Commands.parallel(
+        CommandBase shelf = Commands.parallel(
                 setAngle(SHELF_ANGLE.get()),
                 setExtension(SHELF_EXTENSION.get())//,
         );
+        shelf.addRequirements(this);
+        return shelf;
     }
 }
