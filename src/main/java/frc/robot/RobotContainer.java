@@ -59,7 +59,7 @@ public class RobotContainer {
         CameraServer.startAutomaticCapture();
         PortForwarder.add(5800, "photonvision.local", 5800);
         autos.setDefaultOption("Mobility", getScoreMobilityAuto());
-        autos.addOption("Engage Charge Station", getChargeStationAuto());
+        //autos.addOption("Engage Charge Station", getChargeStationAuto());
         autos.addOption("Dock Charge Station", getDockingAuto());
         SmartDashboard.putData("Select Auto", autos);
     }

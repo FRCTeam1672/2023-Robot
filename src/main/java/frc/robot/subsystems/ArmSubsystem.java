@@ -211,6 +211,13 @@ public class ArmSubsystem extends SubsystemBase {
                 //.andThen(new TimerCommand(this::outtake, 1))
                 //.finallyDo(e -> getStowCommand().schedule());
     }
+    private Command getStartPosition() {
+        return Commands.parallel(
+                setAngle(MID_ANGLE.get()),
+                setExtension(MID_EXTENSION.get()));
+                //.andThen(new TimerCommand(this::outtake, 1))
+                //.finallyDo(e -> getStowCommand().schedule());
+    }
 
     private Command getScoreHighCommand() {
         return Commands.parallel(
