@@ -113,8 +113,8 @@ public class RobotContainer {
                 .getStowCommand()
                 .andThen(
                     new DriveRobotToChargeStation(driveSubsystem, gyroSubsystem)
-                    .andThen(new TimerCommand(() -> driveSubsystem.drive(-0.785, 0), 0.815))
-                    .andThen(new TimerCommand(() -> driveSubsystem.drive(0, 0.86), 0.7))
+                    .andThen(new TimerCommand(() -> driveSubsystem.drive(-0.785, 0), 0.81))
+                    .andThen(new TimerCommand(() -> driveSubsystem.drive(0, 0.86), 0.6))
                     .andThen(driveSubsystem::stop)
                 );
 
