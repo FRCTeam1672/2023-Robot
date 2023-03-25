@@ -94,13 +94,23 @@ public class RobotContainer {
         CommandScheduler.getInstance().cancelAll();
         armSubsystem.getGamePieceStowCommand().schedule();
        }));
-       operatorController.rightStick().onTrue(armSubsystem.getShelfIntakeCommand());
+       operatorController.rightStick().onTrue(Commands.run(() -> {
+        CommandScheduler.getInstance().cancelAll();
+        armSubsystem.getShelfIntakeCommand().schedule();
+       }));
        operatorController.rightBumper().whileTrue(new IntakeCommand(armSubsystem));
        operatorController.leftBumper().whileTrue(new OuttakeCommand(armSubsystem));
        operatorController.y().whileTrue(new MoveElevatorUpCommand(armSubsystem));
        operatorController.a().whileTrue(new MoveElevatorDownCommand(armSubsystem));
-       operatorController.b().onTrue(armSubsystem.getScoreCommand(Height.HIGH));
-       operatorController.x().onTrue(armSubsystem.getScoreCommand(Height.MID));
+       operatorController.b().onTrue(Commands.run(() -> {
+        CommandScheduler.getInstance().cancelAll();
+        armSubsystem.getScoreCommand(Height.HIGH).schedule();
+       }));
+       operatorController.x().onTrue(Commands.run(() -> {
+        CommandScheduler.getInstance().cancelAll();
+        armSubsystem.getScoreCommand(Height.MID).schedule();
+
+       }));
        operatorController.povUp().whileTrue(new ExtendElevatorCommand(armSubsystem));
        operatorController.povDown().whileTrue(new RetractElevatorCommand(armSubsystem));
        operatorController.povLeft().onTrue(Commands.runOnce(() -> {

@@ -116,6 +116,8 @@ public class ArmSubsystem extends SubsystemBase {
         SmartDashboard.putBoolean("Elevator Limit Switch", !bottomElevatorLimitSwitch.get());
         SmartDashboard.putBoolean("Winch Limit Switch", !winchAngleLimitSwitch.get());
 
+        SmartDashboard.putBoolean("Is Homed", isGamePieceStowed());
+
         if (!bottomElevatorLimitSwitch.get()) {
             lElevator.getEncoder().setPosition(0);
             rElevator.getEncoder().setPosition(0);
