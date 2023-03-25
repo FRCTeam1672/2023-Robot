@@ -16,6 +16,10 @@ public class DriveSubsystem extends SubsystemBase {
 
     private final DifferentialDrive drive;
 
+    public DifferentialDrive getDrive() {
+        return drive;
+    }
+
     private final CommandXboxController xboxController;
 
     public CommandXboxController getXboxController() {

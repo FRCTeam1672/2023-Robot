@@ -15,7 +15,7 @@ public class VisionSubsystem extends SubsystemBase {
     }
     public double getDistanceFromSubstation(){
         for (PhotonTrackedTarget target : photonCamera.getLatestResult().targets) {
-            if(target.getFiducialId() == 4 || target.getFiducialId() == 8){
+            if(target.getFiducialId() == 4 || target.getFiducialId() == 5){
                 return target.getBestCameraToTarget().getX();
             }
         }
