@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -56,6 +57,7 @@ public class RobotContainer {
     public RobotContainer() {
         bindBindings();
         CameraServer.startAutomaticCapture();
+        PortForwarder.add(5800, "photonvision.local", 5800);
         autos.setDefaultOption("Mobility", getScoreMobilityAuto());
         autos.addOption("Engage Charge Station", getChargeStationAuto());
         autos.addOption("Dock Charge Station", getDockingAuto());
@@ -111,8 +113,8 @@ public class RobotContainer {
                 .getStowCommand()
                 .andThen(
                     new DriveRobotToChargeStation(driveSubsystem, gyroSubsystem)
-                    .andThen(new TimerCommand(() -> driveSubsystem.drive(-0.785, 0), 0.835))
-                    .andThen(new TimerCommand(() -> driveSubsystem.drive(0, 0.86), 0.5))
+                    .andThen(new TimerCommand(() -> driveSubsystem.drive(-0.785, 0), 0.815))
+                    .andThen(new TimerCommand(() -> driveSubsystem.drive(0, 0.86), 0.7))
                     .andThen(driveSubsystem::stop)
                 );
 
