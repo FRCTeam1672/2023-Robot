@@ -93,7 +93,12 @@ public class RobotContainer {
        operatorController.x().onTrue(armSubsystem.getScoreCommand(Height.MID));
        operatorController.povUp().whileTrue(new ExtendElevatorCommand(armSubsystem));
        operatorController.povDown().whileTrue(new RetractElevatorCommand(armSubsystem));
-       operatorController.povLeft().onTrue(Commands.runOnce(() -> CommandScheduler.getInstance().cancelAll()));
+       operatorController.povLeft().onTrue(Commands.runOnce(() -> {
+        armSubsystem.stopElevator();
+        armSubsystem.stopIntake();
+        armSubsystem.stopWinch();
+        CommandScheduler.getInstance().cancelAll();
+    }));
     }
     public SendableChooser<Command> getAutos() {
         return autos;
