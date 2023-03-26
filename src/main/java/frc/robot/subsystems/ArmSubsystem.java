@@ -58,7 +58,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     /** Increase elevator extension. */
     public void extend() {
-        if (rElevator.getEncoder().getPosition() > 105) {
+        if (rElevator.getEncoder().getPosition() > 100) {
             stopElevator();
             return;
         }
@@ -145,10 +145,10 @@ public class ArmSubsystem extends SubsystemBase {
         double ERROR = 8;
 
         return Commands.run(() -> {
-            double errorDirection = Math.signum(encoderPosition - rElevator.getEncoder().getPosition());
-            double elevatorSpeed = errorDirection * 0.4;
-
-            rElevator.set(elevatorSpeed);
+            // double errorDirection = Math.signum(encoderPosition - rElevator.getEncoder().getPosition());
+            // double elevatorSpeed = errorDirection * 0.4;
+            // rElevator.set(elevatorSpeed);
+            extend();
         }).until(() -> Math.abs(rElevator.getEncoder().getPosition() - encoderPosition) < ERROR)
                 .andThen(this::stopElevator);
     }
