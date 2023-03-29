@@ -60,7 +60,8 @@ public class RobotContainer {
         bindBindings();
         CameraServer.startAutomaticCapture();
         PortForwarder.add(5800, "photonvision.local", 5800);
-        autos.setDefaultOption("Mobility", getScoreMobilityAuto());
+        autos.setDefaultOption("High Mobility", getScoreMobilityAuto());
+        autos.setDefaultOption("Mid Mobility", getScoreMidMobilityAuto());
         //autos.addOption("Engage Charge Station", getChargeStationAuto());
         autos.addOption("Dock Charge Station", getDockingAuto());
         SmartDashboard.putData("Select Auto", autos);
@@ -139,7 +140,7 @@ public class RobotContainer {
                 .andThen(
                     new DriveRobotToChargeStation(driveSubsystem, gyroSubsystem)
                     .andThen(new TimerCommand(() -> driveSubsystem.drive(-0.785, 0), 0.825))
-                    .andThen(new TimerCommand(() -> driveSubsystem.drive(0, 0.86), 0.5))
+                    .andThen(new TimerCommand(() -> driveSubsystem.drive(0, 0.86), 0.485))
                     .andThen(driveSubsystem::stop)
                 );
 
@@ -147,6 +148,15 @@ public class RobotContainer {
     public Command getScoreMobilityAuto(){
         return armSubsystem.getStowCommand()
                 .andThen(armSubsystem.getScoreCommand(Height.HIGH))
+                .andThen(new TimerCommand(armSubsystem::outtake, 2))
+                .andThen(Commands.runOnce(armSubsystem::stopIntake))
+                .andThen(Commands.parallel(armSubsystem.getStowCommand(), new TimerCommand(() -> driveSubsystem.drive(-0.61, 0), 4.25)))
+                .andThen(() -> driveSubsystem.drive(0, 0)
+            );
+    }
+    public Command getScoreMidMobilityAuto(){
+        return armSubsystem.getStowCommand()
+                .andThen(armSubsystem.getScoreCommand(Height.MID))
                 .andThen(new TimerCommand(armSubsystem::outtake, 2))
                 .andThen(Commands.runOnce(armSubsystem::stopIntake))
                 .andThen(Commands.parallel(armSubsystem.getStowCommand(), new TimerCommand(() -> driveSubsystem.drive(-0.61, 0), 4.25)))
