@@ -63,7 +63,7 @@
               "_showGlyph": false
             }
           },
-          "4,2": {
+          "6,2": {
             "size": [
               2,
               1
@@ -78,9 +78,9 @@
               "Colors/Color when false": "#8B0000FF"
             }
           },
-          "6,2": {
+          "8,2": {
             "size": [
-              2,
+              1,
               1
             ],
             "content": {
@@ -93,9 +93,9 @@
               "Colors/Color when false": "#8B0000FF"
             }
           },
-          "6,0": {
+          "8,0": {
             "size": [
-              2,
+              1,
               1
             ],
             "content": {
@@ -106,9 +106,9 @@
               "_showGlyph": false
             }
           },
-          "6,1": {
+          "8,1": {
             "size": [
-              2,
+              1,
               1
             ],
             "content": {
@@ -123,7 +123,7 @@
           },
           "0,0": {
             "size": [
-              4,
+              3,
               3
             ],
             "content": {
@@ -168,7 +168,7 @@
               "_showGlyph": false
             }
           },
-          "4,0": {
+          "6,0": {
             "size": [
               2,
               2
@@ -181,6 +181,27 @@
               "_showGlyph": false,
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "3,0": {
+            "size": [
+              3,
+              3
+            ],
+            "content": {
+              "_type": "Camera Stream",
+              "_source0": "camera_server://photonvision_Port_1182_MJPEG_Server",
+              "_title": "photonvision_Port_1182_MJPEG_Server",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Crosshair/Show crosshair": true,
+              "Crosshair/Crosshair color": "#FFFFFFFF",
+              "Controls/Show controls": true,
+              "Controls/Rotation": "NONE",
+              "compression": -1.0,
+              "fps": -1,
+              "imageWidth": 300,
+              "imageHeight": 300
             }
           }
         }

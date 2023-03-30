@@ -58,7 +58,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     /** Increase elevator extension. */
     public void extend() {
-        if (rElevator.getEncoder().getPosition() > 100) {
+        if (rElevator.getEncoder().getPosition() > 110) {
             stopElevator();
             return;
         }
@@ -80,12 +80,11 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public void intake() {
-        lIntake.set(-0.7);
+        lIntake.set(-1);
     }
 
     public void outtake() {
-        double speed = 0.6;// targeter.getTargetNode().getTranslation() == Translation.CENTER ? 0.5 : 1.0;
-        lIntake.set(speed);
+        lIntake.set(1);
     }
 
     public void stopWinch() {

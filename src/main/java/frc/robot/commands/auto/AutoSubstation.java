@@ -12,7 +12,7 @@ public class AutoSubstation extends CommandBase{
     private DriveSubsystem drive;
     public static final  PIDController pidController = new PIDController(0.74, 0.08, 0.2);
     static{
-        pidController.setSetpoint(1.5);
+        pidController.setSetpoint(1);
     }
     public AutoSubstation(DriveSubsystem drive, VisionSubsystem visionSubsystem){
         this.drive = drive;
