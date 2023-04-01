@@ -153,8 +153,8 @@ public class RobotContainer {
                 .andThen(armSubsystem.getStowCommand())
                 .andThen(
                     new DriveRobotToChargeStation(driveSubsystem, gyroSubsystem)
-                    .andThen(new TimerCommand(() -> driveSubsystem.drive(SmartDashboard.getNumber("Auto Drive Backward Speed", -0.785), 0), SmartDashboard.getNumber("Auto Drive Backward Duration", 1.25)))
-                    .andThen(new TimerCommand(() -> driveSubsystem.drive(0, SmartDashboard.getNumber("Auto Dock Speed", 0.86)), SmartDashboard.getNumber("Auto Dock Duration", 0.485)))
+                    .andThen(new TimerCommand(() -> driveSubsystem.drive(SmartDashboard.getNumber("Auto Drive Backward Speed", -0.785), 0), SmartDashboard.getNumber("Auto Drive Backward Duration", 1.15)))
+                    .andThen(new TimerCommand(() -> driveSubsystem.drive(0, SmartDashboard.getNumber("Auto Dock Speed", 0.865)), SmartDashboard.getNumber("Auto Dock Duration", 0.48)))
                     .andThen(driveSubsystem::stop)
                 );
 

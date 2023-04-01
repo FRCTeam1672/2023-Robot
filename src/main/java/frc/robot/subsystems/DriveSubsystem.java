@@ -17,7 +17,7 @@ public class DriveSubsystem extends SubsystemBase {
     private final WPI_TalonSRX backRightDriveMotor = new WPI_TalonSRX(4);
     private final WPI_TalonSRX backLeftDriveMotor = new WPI_TalonSRX(5);
 
-    private final SlewRateLimiter driveRateLimiter = new SlewRateLimiter(5);
+    private final SlewRateLimiter driveRateLimiter = new SlewRateLimiter(4);
 
     private final DifferentialDrive drive;
 
@@ -25,6 +25,7 @@ public class DriveSubsystem extends SubsystemBase {
         return drive;
     }
 
+    
     private final CommandXboxController xboxController;
 
     public CommandXboxController getXboxController() {

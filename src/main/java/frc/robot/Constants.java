@@ -12,7 +12,7 @@ public final class Constants {
     public static final TunableNumber GROUND_ANGLE = new TunableNumber("Ground Angle", 6);
     public static final TunableNumber HYBRID_ANGLE = new TunableNumber("Hybrid Angle", 6);
     public static final TunableNumber MID_ANGLE = new TunableNumber("Mid Angle", -192);
-    public static final TunableNumber HIGH_ANGLE = new TunableNumber("High Angle", -194);
+    public static final TunableNumber HIGH_ANGLE = new TunableNumber("High Angle", -180);
     public static final TunableNumber SHELF_ANGLE = new TunableNumber("Shelf Angle", -157);
     public static final TunableNumber START_POS = new TunableNumber("Start POS", -63);
     public static final TunableNumber GROUND_EXTENSION = new TunableNumber("Ground Extension", 6);
