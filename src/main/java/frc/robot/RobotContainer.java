@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.net.PortForwarder;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -67,6 +68,11 @@ public class RobotContainer {
         SmartDashboard.putData("Select Auto", autos);
 
         SmartDashboard.putData("Frame Perimeter", armSubsystem.getFramePerimeterCommand().asProxy());
+
+        SmartDashboard.putNumber("Auto Drive Backward Speed", -0.745);
+        SmartDashboard.putNumber("Auto Drive Backward Duration", 0.825);
+        SmartDashboard.putNumber("Auto Dock Speed", 0.86);
+        SmartDashboard.putNumber("Auto Dock Duration", 0.485);
     }
 
     private void bindBindings() {
@@ -86,6 +92,8 @@ public class RobotContainer {
         driveController.a().whileTrue(new ExtendElevatorCommand(armSubsystem));
         driveController.b().whileTrue(new RetractElevatorCommand(armSubsystem));
 
+        driveController.povLeft().onTrue(getDockingAuto());
+
        operatorController.back().whileTrue(Commands.run(() -> ledLightSubsystem.setColor(PURPLE))
        .handleInterrupt(() -> ledLightSubsystem.setColor(RAINBOW)));
        operatorController.start().whileTrue(Commands.run(() -> ledLightSubsystem.setColor(YELLOW))
@@ -99,6 +107,7 @@ public class RobotContainer {
         CommandScheduler.getInstance().cancelAll();
         armSubsystem.getShelfIntakeCommand().schedule();
        }));
+
        operatorController.rightBumper().whileTrue(new IntakeCommand(armSubsystem));
        operatorController.leftBumper().whileTrue(new OuttakeCommand(armSubsystem));
        operatorController.y().whileTrue(new MoveElevatorUpCommand(armSubsystem));
@@ -135,12 +144,17 @@ public class RobotContainer {
 
     }
     public Command getDockingAuto() {
+
         return armSubsystem
                 .getStowCommand()
+                .andThen(armSubsystem.getScoreCommand(Height.MID))
+                .andThen(new TimerCommand(armSubsystem::outtake, 2))
+                .andThen(Commands.runOnce(armSubsystem::stopIntake))
+                .andThen(armSubsystem.getStowCommand())
                 .andThen(
                     new DriveRobotToChargeStation(driveSubsystem, gyroSubsystem)
-                    .andThen(new TimerCommand(() -> driveSubsystem.drive(-0.785, 0), 0.825))
-                    .andThen(new TimerCommand(() -> driveSubsystem.drive(0, 0.86), 0.485))
+                    .andThen(new TimerCommand(() -> driveSubsystem.drive(SmartDashboard.getNumber("Auto Drive Backward Speed", -0.785), 0), SmartDashboard.getNumber("Auto Drive Backward Duration", 1.25)))
+                    .andThen(new TimerCommand(() -> driveSubsystem.drive(0, SmartDashboard.getNumber("Auto Dock Speed", 0.86)), SmartDashboard.getNumber("Auto Dock Duration", 0.485)))
                     .andThen(driveSubsystem::stop)
                 );
 
