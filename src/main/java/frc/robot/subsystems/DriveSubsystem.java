@@ -17,7 +17,7 @@ public class DriveSubsystem extends SubsystemBase {
     private final WPI_TalonSRX backRightDriveMotor = new WPI_TalonSRX(4);
     private final WPI_TalonSRX backLeftDriveMotor = new WPI_TalonSRX(5);
 
-    private final SlewRateLimiter driveRateLimiter = new SlewRateLimiter(4);
+    private final SlewRateLimiter driveRateLimiter = new SlewRateLimiter(3);
 
     private final DifferentialDrive drive;
 
@@ -67,12 +67,13 @@ public class DriveSubsystem extends SubsystemBase {
         //grab controller X and Y vales
         //pass to DifferentialDrive arcadedrive (x foward, y rotate)
         double xSpeed = /*-(0.65 + speed) */ -xboxController.getLeftY();
+        
         double zRotation = /*-(0.75 + speed / 2) */ -xboxController.getRightX();
         if(Math.abs(xSpeed) <= 0.20 && Math.abs(zRotation) <= 0.2) {
             stop();
             return;
         }
-        drive.arcadeDrive(driveRateLimiter.calculate(xSpeed), MathUtil.clamp(zRotation, -0.8, 0.8));
+        drive.arcadeDrive(MathUtil.clamp(driveRateLimiter.calculate(xSpeed), -0.9, 0.9), MathUtil.clamp(zRotation, -0.8, 0.8));
     }
     public void drive(double xSpeed, double zSpeed) {
         drive.arcadeDrive(xSpeed, -zSpeed);
