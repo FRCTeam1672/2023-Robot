@@ -1,6 +1,11 @@
 {
   "SysId": {
     "Analysis Type": "Drivetrain",
+    "Analyzer": {
+      "window": {
+        "visible": false
+      }
+    },
     "Generator": {
       "window": {
         "visible": false
