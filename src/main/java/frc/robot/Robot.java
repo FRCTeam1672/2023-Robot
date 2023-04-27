@@ -7,6 +7,7 @@ package frc.robot;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPRamseteCommand;
+import com.pathplanner.lib.server.PathPlannerServer;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
@@ -34,10 +35,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    PathPlannerServer.startServer(5811); // 5811 = port number. adjust this according to your needs
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     robotContainer = new RobotContainer();
-    autoTrajectory = PathPlanner.loadPath("New Path", 3, 3);
+    autoTrajectory = PathPlanner.loadPath("New New Path", 1, 1);
   }
 
   /**

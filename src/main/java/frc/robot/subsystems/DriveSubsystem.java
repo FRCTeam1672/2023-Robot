@@ -21,8 +21,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -110,7 +112,7 @@ public class DriveSubsystem extends SubsystemBase {
 
         SmartDashboard.putNumber("XSpeed Controller", xSpeed);
         SmartDashboard.putNumber("ZSpeed Controller", zRotation);
-        if(robotContainer.isInAuto()) return;
+        if(DriverStation.isAutonomousEnabled() || robotContainer.isInAuto()) return;
         drive.arcadeDrive(MathUtil.clamp(xSpeed, -0.8, 0.8), MathUtil.clamp(zRotation, -0.7, 0.7));
     }
 
@@ -129,31 +131,33 @@ public class DriveSubsystem extends SubsystemBase {
     public void driveVolts(double leftVolts, double rightVolts) {
         leftFrontDriveMotor.setVoltage(leftVolts);
         rightFrontDriveMotor.setVoltage(rightVolts);
+        SmartDashboard.putNumber("LeftVolts", leftVolts);
+        SmartDashboard.putNumber("RightVolts", rightVolts);
         drive.feed();
     }
 
     public Command getAutoCommand(PathPlannerTrajectory traj, boolean isFirstPath) {
-        // return new SequentialCommandGroup(
-        //         new InstantCommand(() -> {
-        //             // Reset odometry for the first path you run during auto
-        //             if (isFirstPath) {
-        //                 odometry.resetPosition(navX.getRotation2d(), 0, 0, traj.getInitialPose());
-        //             }
-        //         }),
-        //         new PPRamseteCommand(
-        //                 traj,
-        //                 this::getPose, // Pose supplier
-        //                 new RamseteController(),
-        //                 new SimpleMotorFeedforward(Ks, Kv, Ka),
-        //                 DRIVE_KINEMATICS, // DifferentialDriveKinematics
-        //                 this::getWheelSpeeds, // DifferentialDriveWheelSpeeds supplier
-        //                 new PIDController(0, 0, 0), // Left controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-        //                 new PIDController(0, 0, 0), // Right controller (usually the same values as left controller)
-        //                 this::driveVolts, // Voltage biconsumer
-        //                 true, // Should the path be automatically mirrored depending on alliance color.
-        //                       // Optional, defaults to true
-        //                 this // Requires this drive subsystem
-        //         )).andThen(drive::stopMotor, this).handleInterrupt(drive::stopMotor);
-        return Commands.none();
+        return new SequentialCommandGroup(
+                new InstantCommand(() -> {
+                    // Reset odometry for the first path you run during auto
+                    if (isFirstPath) {
+                        odometry.resetPosition(navX.getRotation2d(), 0, 0, traj.getInitialPose());
+                    }
+                }),
+                new PPRamseteCommand(
+                        traj,
+                        this::getPose, // Pose supplier
+                        new RamseteController(),
+                        new SimpleMotorFeedforward(Ks, Kv, Ka),
+                        DRIVE_KINEMATICS, // DifferentialDriveKinematics
+                        this::getWheelSpeeds, // DifferentialDriveWheelSpeeds supplier
+                        new PIDController(0, 0, 0), // Left controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+                        new PIDController(0.1, 0.05, 0.2), // Right controller (usually the same values as left controller)
+                        this::driveVolts, // Voltage biconsumer
+                        false, // Should the path be automatically mirrored depending on alliance color.
+                              // Optional, defaults to true
+                        this // Requires this drive subsystem
+                )).handleInterrupt(drive::stopMotor);
+        // return Commands.none();
     }
 }

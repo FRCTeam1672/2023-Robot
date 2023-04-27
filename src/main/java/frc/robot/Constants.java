@@ -19,10 +19,10 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
   public static class DriveCharacteristics {
-    public static final double Ks = 1.268;
-    public static final double Kv = 2.4389;
-    public static final double Ka = 1.033586;
-    public static final double Kp = 3.2843;
+    public static final double Ks = 1.3488;
+    public static final double Kv = 2.449;
+    public static final double Ka = 1.33117;
+    public static final double Kp = 4.2099;
     public static final double Kd = 0.0;
 
     //TODO CHANGE THIS!
