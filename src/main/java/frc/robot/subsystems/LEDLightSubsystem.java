@@ -3,8 +3,10 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 
 import java.util.function.BiConsumer;
 
@@ -68,6 +70,17 @@ public class LEDLightSubsystem extends SubsystemBase {
             for (int i = 0; i < ledBuffer.getLength(); i++) {
                 ledBuffer.setRGB(i, 0, 0, 0);
             }
+        }),
+        RSL_SYNC((ledBuffer, persistentState) -> {
+            boolean rslOn = RobotController.getInputCurrent() > 0.36;
+
+            for (int i = 0; i < ledBuffer.getLength(); i++) {
+                if(rslOn) {
+                    ledBuffer.setRGB(i, 250, 30, 0);
+                } else {
+                    ledBuffer.setRGB(i, 0, 0, 0);
+                }
+            }
         });
 
         public final BiConsumer<AddressableLEDBuffer, PersistentLedState> setBuffer;
@@ -101,9 +114,11 @@ public class LEDLightSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if(!DriverStation.isEnabled()) idle();
-        else if(currentState == LedState.PURPLE || currentState == LedState.YELLOW) {}
-        else setColor(LedState.RAINBOW); 
+        // System.out.println(RobotController.getInputCurrent());
+        setColor(LedState.RSL_SYNC);
+        // if(!DriverStation.isEnabled()) idle();
+        // else if(currentState == LedState.PURPLE || currentState == LedState.YELLOW) {}
+        // else setColor(LedState.RAINBOW); 
         currentState.setBuffer.accept(addressableLEDBuffer, persistentLedState);
         addressableLED.setData(addressableLEDBuffer);
     }
