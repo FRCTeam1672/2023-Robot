@@ -19,7 +19,7 @@ import frc.robot.Targeter;
 import frc.robot.commands.elevator.TimerCommand;
 
 public class ArmSubsystem extends SubsystemBase {
-    private final CANSparkMax rIntake = new CANSparkMax(21, MotorType.kBrushless);
+    //private final CANSparkMax rIntake = new CANSparkMax(21, MotorType.kBrushless);
     private final CANSparkMax lIntake = new CANSparkMax(22, MotorType.kBrushless);
 
     private final CANSparkMax rElevator = new CANSparkMax(11, MotorType.kBrushless);
@@ -30,7 +30,7 @@ public class ArmSubsystem extends SubsystemBase {
     private final DigitalInput winchAngleLimitSwitch = new DigitalInput(8);
 
     public ArmSubsystem() {
-        rIntake.follow(lIntake);
+        //rIntake.follow(lIntake);
         lElevator.follow(rElevator, true);
         //intakeSet();
     }
@@ -49,7 +49,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     /** Decrease elevator angle. */
     public void moveDown() {
-        if (winch.getEncoder().getPosition() <= -360) {
+        if (winch.getEncoder().getPosition() <= -380) {
             stopWinch();
             return;
         }
@@ -98,7 +98,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     public void stopIntake() {
         lIntake.stopMotor();
-        rIntake.stopMotor();
+        //rIntake.stopMotor();
     }
 
     private boolean isStowed() {
@@ -181,20 +181,6 @@ public class ArmSubsystem extends SubsystemBase {
                 .finallyDo(e -> {this.stopWinch(); this.stopElevator();});
         // stow.addRequirements(this);
         return stow;
-    }
-
-    public Command getConeIntakeCommand() {
-        return Commands.run(this::intake)
-            .until(() -> this.lIntake.getOutputCurrent() + this.rIntake.getOutputCurrent() > Constants.Elevator.INTAKE_CONE_CAP.get())
-            .andThen(() -> this.lIntake.set(-0.2));
-    }
-
-    public Command getCubeIntakeCommand() {
-        Command intakeCommandRaw = Commands.run(this::intake)
-                .until(() -> this.lIntake.getOutputCurrent() + this.rIntake.getOutputCurrent() > Constants.Elevator.INTAKE_CUBE_CAP.get())
-                .andThen(() -> {});
-
-        return Commands.sequence(new TimerCommand(this::intake, 0.8), intakeCommandRaw);
     }
 
     private CommandBase getScoreHybridCommand() {
