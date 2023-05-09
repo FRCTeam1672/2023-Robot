@@ -19,10 +19,10 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
   public static class DriveCharacteristics {
-    public static final double Ks = 1.3488;
-    public static final double Kv = 2.449;
-    public static final double Ka = 1.33117;
-    public static final double Kp = 4.2099;
+    public static final double Ks = 1.877;
+    public static final double Kv = 2.69;
+    public static final double Ka = 0.3117;
+    public static final double Kp = 8.2099;
     public static final double Kd = 0.0;
 
     //TODO CHANGE THIS!
@@ -42,9 +42,9 @@ public final class Constants {
     public static final double ramseteZeta = 0.7;
   }
   public static class PIDConstants {
-    public static final double kp = 0.024;
+    public static final double kp = 0.074;
     public static final double ki = 0.096;
-    public static final double kd = 0.0025;
+    public static final double kd = 0.0055;
 
     public static final double Xkp = 0.3;
     public static final double Xki = 0.0;

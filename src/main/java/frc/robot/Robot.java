@@ -39,7 +39,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     robotContainer = new RobotContainer();
-    autoTrajectory = PathPlanner.loadPath("New New Path", 1, 1);
+    autoTrajectory = PathPlanner.loadPath("New New New Path", 1, 1);
   }
 
   /**

@@ -112,7 +112,7 @@ public class DriveSubsystem extends SubsystemBase {
 
         SmartDashboard.putNumber("XSpeed Controller", xSpeed);
         SmartDashboard.putNumber("ZSpeed Controller", zRotation);
-        if(DriverStation.isAutonomousEnabled() || robotContainer.isInAuto()) return;
+        if(DriverStation.isAutonomous() || robotContainer.isInAuto()) return;
         drive.arcadeDrive(MathUtil.clamp(xSpeed, -0.8, 0.8), MathUtil.clamp(zRotation, -0.7, 0.7));
     }
 
@@ -146,18 +146,18 @@ public class DriveSubsystem extends SubsystemBase {
                 }),
                 new PPRamseteCommand(
                         traj,
-                        this::getPose, // Pose supplier
+                        this::getPose, // Pose supplierZ
                         new RamseteController(),
                         new SimpleMotorFeedforward(Ks, Kv, Ka),
                         DRIVE_KINEMATICS, // DifferentialDriveKinematics
                         this::getWheelSpeeds, // DifferentialDriveWheelSpeeds supplier
                         new PIDController(0, 0, 0), // Left controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-                        new PIDController(0.1, 0.05, 0.2), // Right controller (usually the same values as left controller)
+                        new PIDController(0, 0, 0), // Right controller (usually the same values as left controller)
                         this::driveVolts, // Voltage biconsumer
                         false, // Should the path be automatically mirrored depending on alliance color.
                               // Optional, defaults to true
                         this // Requires this drive subsystem
-                )).handleInterrupt(drive::stopMotor);
+                ));
         // return Commands.none();
     }
 }
