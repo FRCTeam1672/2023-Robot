@@ -115,10 +115,10 @@ public class LEDLightSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         // System.out.println(RobotController.getInputCurrent());
-        setColor(LedState.RSL_SYNC);
-        // if(!DriverStation.isEnabled()) idle();
-        // else if(currentState == LedState.PURPLE || currentState == LedState.YELLOW) {}
-        // else setColor(LedState.RAINBOW); 
+        //setColor(LedState.RAINBOW);
+        if(!DriverStation.isEnabled()) idle();
+        else if(currentState == LedState.PURPLE || currentState == LedState.YELLOW) {}
+        else setColor(LedState.RAINBOW); 
         currentState.setBuffer.accept(addressableLEDBuffer, persistentLedState);
         addressableLED.setData(addressableLEDBuffer);
     }

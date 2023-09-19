@@ -73,7 +73,7 @@ public class DriveSubsystem extends SubsystemBase {
             stop();
             return;
         }
-        drive.arcadeDrive(MathUtil.clamp(driveRateLimiter.calculate(xSpeed), -0.9, 0.9), MathUtil.clamp(zRotation, -0.8, 0.8));
+        drive.arcadeDrive(MathUtil.clamp(driveRateLimiter.calculate(xSpeed), -0.4, 0.4), MathUtil.clamp(zRotation, -0.5, 0.5));
     }
     public void drive(double xSpeed, double zSpeed) {
         drive.arcadeDrive(xSpeed, -zSpeed);
