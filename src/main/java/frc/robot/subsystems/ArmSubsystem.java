@@ -19,7 +19,7 @@ import frc.robot.Targeter;
 import frc.robot.commands.elevator.TimerCommand;
 
 public class ArmSubsystem extends SubsystemBase {
-    //private final CANSparkMax rIntake = new CANSparkMax(21, MotorType.kBrushless);
+    private final CANSparkMax rIntake = new CANSparkMax(21, MotorType.kBrushless);
     private final CANSparkMax lIntake = new CANSparkMax(22, MotorType.kBrushless);
 
     private final CANSparkMax rElevator = new CANSparkMax(11, MotorType.kBrushless);
@@ -81,10 +81,12 @@ public class ArmSubsystem extends SubsystemBase {
 
     public void intake() {
         lIntake.set(-1);
+        rIntake.set(-1);
     }
 
     public void outtake() {
         lIntake.set(1);
+        rIntake.set(1);
     }
 
     public void stopWinch() {
@@ -98,7 +100,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     public void stopIntake() {
         lIntake.stopMotor();
-        //rIntake.stopMotor();
+        rIntake.stopMotor();
     }
 
     private boolean isStowed() {

@@ -89,8 +89,6 @@ public class RobotContainer {
         driveController.a().whileTrue(new ExtendElevatorCommand(armSubsystem));
         driveController.b().whileTrue(new RetractElevatorCommand(armSubsystem));
 
-        driveController.povLeft().onTrue(getDockingAuto());
-
         operatorController.back().whileTrue(Commands.run(() -> ledLightSubsystem.setColor(PURPLE))
                 .handleInterrupt(() -> ledLightSubsystem.setColor(RAINBOW)));
         operatorController.start().whileTrue(Commands.run(() -> ledLightSubsystem.setColor(YELLOW))
